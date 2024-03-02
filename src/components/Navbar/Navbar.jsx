@@ -38,7 +38,7 @@ const Navbar = () => {
             <Link href="/pngtosvg">PNG TO SVG</Link>
           </li>
           <li>
-            <Link href="/privacy-policy">PRIVACY POLICY</Link>
+            <Link href="/auth">Sign In</Link>
           </li>
           {/* <li>
             <Link href="#">Services</Link>
