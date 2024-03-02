@@ -48,7 +48,7 @@ const Signin = () => {
   };
 
   return (
-    <div class="relative mx-auto w-full max-w-md bg-white px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:rounded-xl sm:px-10">
+    <div class="relative mx-auto w-full max-w-md bg-white px-6 pt-10 pb-8  shadow-xl ring-1 ring-gray-900/5 sm:rounded-xl sm:px-10">
       <div class="w-full">
         <div class="text-center">
           <h1 class="text-3xl font-semibold text-gray-900">Sign in</h1>

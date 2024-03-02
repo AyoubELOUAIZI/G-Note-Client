@@ -1,12 +1,16 @@
+'use client'
 import React from 'react'
+import Auth from '@/components/Auth'
 
 const page = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-    <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-      <div>auth page </div>
+    <div class="">
+    <div class="pt-16 md:pt-24">
+      hellow world this is the page starting ...
+      <Auth/>
     </div>
-  </main>
+    </div>
+   
   )
 }
 
