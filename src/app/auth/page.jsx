@@ -6,7 +6,7 @@ const page = () => {
   return (
     <div class="">
     <div class="pt-16 md:pt-24">
-      hellow world this is the page starting ...
+      {/* hellow world this is the page starting ... */}
       <Auth/>
     </div>
     </div>

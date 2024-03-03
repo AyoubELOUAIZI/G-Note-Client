@@ -1,10 +1,20 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
 import AuthContext from "@/contexts/AuthContext"; // Update the path to AuthContext
+import { useRouter } from "next/navigation";
 
 const Auth = () => {
-  const { user,setUser } = useContext(AuthContext);
-  console.log("🚀 ~ Auth ~ user:", user)
+  const router = useRouter();
+  const { user, setUser } = useContext(AuthContext);
+
+  //navigate to user page if already logged in
+  if (user) {
+    if (!user?.admin) {
+      router.push("/mynotes");
+    } else {
+      router.push("/dashboard");
+    }
+  }
 
   const [isLogin, setLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -31,7 +41,8 @@ const Auth = () => {
       if (response.data) {
         console.log(response.data);
         setUser(response.data);
-        
+        console.log("🚀 ~ Auth ~ user:", user);
+        router.push("/mynotes");
       }
 
       // Add logic to handle successful sign-in/sign-up
@@ -124,7 +135,7 @@ const Auth = () => {
 
       {/* // the signup */}
       {!isLogin && (
-        <div class="py-3 md:py-16">
+        <div class="py-3 md:py-8">
           <form
             onSubmit={handleSubmit}
             class="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto  lg:max-w-7xl"

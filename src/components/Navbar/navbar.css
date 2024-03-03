@@ -35,7 +35,7 @@ nav{
     list-style: none; 
     width: 88vw;
     padding: 0 0.7vw;
-    justify-content: space-evenly;
+    justify-content: flex-end;
     align-items: center;
     text-transform: uppercase;
 }
