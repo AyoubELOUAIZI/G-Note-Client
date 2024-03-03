@@ -2,12 +2,11 @@
 import "./navbar.css";
 import Image from "next/image";
 import Link from "next/link";
-import AuthContext from "@/contexts/AuthContext"; 
+import AuthContext from "@/contexts/AuthContext";
 import { useContext } from "react";
 
-
 const Navbar = () => {
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
 
   function handleHumburgerClicked() {
     const hamburger = document.querySelector(".hamburger");
@@ -20,6 +19,12 @@ const Navbar = () => {
     });
     //Hamburger Animation
     hamburger.classList.toggle("toggle");
+  }
+
+  function Logout(){
+    //implementing the logout functionality here.
+    //we can also call the logout api to remove the cookies.
+    setUser(null);
   }
 
   return (
@@ -50,7 +55,7 @@ const Navbar = () => {
                   borderRadius: "5px",
                   boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                   textAlign: "center",
-                  margin: '2vw',
+                  margin: "2vw",
                 }}
               >
                 <p
@@ -76,18 +81,16 @@ const Navbar = () => {
             </li>
           )}
           {!user && (
-           
-              <Link href="/auth">
-                <div class="login-button" >Login</div>
-              </Link>
-           
+            <Link href="/auth">
+              <div class="login-button">Login</div>
+            </Link>
           )}
           {user && (
-           
-              <Link href="/auth">
-                <div className="login-button">Sign out</div>
-              </Link>
-           
+            <Link href="/auth">
+              <div className="login-button" onClick={(e) => Logout()}>
+                Sign out
+              </div>
+            </Link>
           )}
           {/* <li>
             <Link href="#">Services</Link>
