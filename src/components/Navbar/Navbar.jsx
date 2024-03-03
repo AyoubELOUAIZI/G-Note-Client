@@ -2,7 +2,7 @@
 import "./navbar.css";
 import Image from "next/image";
 import Link from "next/link";
-import AuthContext from "@/contexts/AuthContext"; // Update the path to AuthContext
+import AuthContext from "@/contexts/AuthContext"; 
 import { useContext } from "react";
 
 

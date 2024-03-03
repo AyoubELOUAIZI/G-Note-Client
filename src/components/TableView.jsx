@@ -4,13 +4,22 @@ import DeleteIcon from "./Icons/DeleteIcon";
 import UpdateIcon from "./Icons/UpdateIcon";
 import AddIcon from "./Icons/AddIcon";
 import NoteForm from "./NoteForm";
+import AuthContext from "@/contexts/AuthContext";
+import { useContext } from "react";
+import { useRouter } from "next/navigation";
 
 const TableView = () => {
+  const router = useRouter();
+  const { user } = useContext(AuthContext);
   const [notes, setNotes] = useState(null);
   const [openForm, setOpenForm] = useState(false);
 
-  //   setNotes([{}, {}, {}]);
   useEffect(() => {
+    if (!user || user?.admin) {
+      //virify this later
+      router.push("/auth");
+    }
+
     setNotes([
       { id: 1, content: "Note 1" },
       { id: 2, content: "Note 2" },
@@ -26,11 +35,11 @@ const TableView = () => {
       <div class="p-5 h-screen bg-gray-100">
         <div className="flex">
           <h1 class="text-xl mb-2">Your notes</h1>
-          <div onClick={e=>setOpenForm(true)}>
-          <AddIcon />
+          <div onClick={(e) => setOpenForm(true)}>
+            <AddIcon />
           </div>
         </div>
-        <NoteForm openForm={openForm} setOpenForm={setOpenForm}/>
+        <NoteForm openForm={openForm} setOpenForm={setOpenForm} />
         {/* for large screen we use this */}
         <div class="overflow-auto rounded-lg shadow hidden md:block">
           <table class="w-full">
@@ -68,8 +77,8 @@ const TableView = () => {
                     16/10/2021
                   </td>
                   <td class="p-3 text-sm  text-gray-700 whitespace-nowrap">
-                  <div onClick={e=>setOpenForm(true)}>
-                    <UpdateIcon />
+                    <div onClick={(e) => setOpenForm(true)}>
+                      <UpdateIcon />
                     </div>
                   </td>
                   <td class="p-3 text-sm flex justify-center  text-gray-700 whitespace-nowrap">

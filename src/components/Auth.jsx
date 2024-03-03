@@ -1,20 +1,22 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import AuthContext from "@/contexts/AuthContext"; // Update the path to AuthContext
+import AuthContext from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
 const Auth = () => {
   const router = useRouter();
   const { user, setUser } = useContext(AuthContext);
 
-  //navigate to user page if already logged in
-  if (user) {
-    if (!user?.admin) {
-      router.push("/mynotes");
-    } else {
-      router.push("/dashboard");
+  useEffect(() => {
+    //navigate to user page if already logged in
+    if (user) {
+      if (!user?.admin) {
+        router.push("/mynotes");
+      } else {
+        router.push("/dashboard");
+      }
     }
-  }
+  }, []);
 
   const [isLogin, setLogin] = useState(true);
   const [email, setEmail] = useState("test@example.com");
