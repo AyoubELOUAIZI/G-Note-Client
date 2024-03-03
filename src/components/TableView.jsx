@@ -79,6 +79,7 @@ console.log(noteToUpdate)
           setOpenForm={setOpenForm}
           noteToUpdate={noteToUpdate}
           fetchNotes={fetchNotes}
+          userId={user?.id}
         />
         {/* for large screen we use this */}
         <div class="overflow-auto rounded-lg shadow hidden md:block">

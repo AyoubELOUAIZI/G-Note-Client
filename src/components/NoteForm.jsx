@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CloseIcon from "./Icons/CloseIcon";
 
-const NoteForm = ({ openForm, setOpenForm, noteToUpdate,fetchNotes }) => {
+const NoteForm = ({ openForm, setOpenForm, noteToUpdate,fetchNotes,userId }) => {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
 
@@ -20,7 +20,7 @@ const NoteForm = ({ openForm, setOpenForm, noteToUpdate,fetchNotes }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const noteData = {idNote:noteToUpdate?noteToUpdate.idNote: null, subject: subject, body: body };
+    const noteData = {idNote:noteToUpdate?noteToUpdate.idNote:0, subject: subject, body: body ,ownerId:userId};
 
     try {
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -37,13 +37,15 @@ const NoteForm = ({ openForm, setOpenForm, noteToUpdate,fetchNotes }) => {
       }
       console.log('res')
       console.log(res)
-      // Check response status to determine success or failure
-      if (res.status === 200) {
-        fetchNotes();
-        console.log("Request successful:", res.data);
-      } else {
-        console.error("Request failed:", res.statusText);
-      }
+      
+    if (res.status >= 200 && res.status < 300) {
+      // Request successful
+      fetchNotes(); // Assuming fetchNotes is a function to reload notes
+      console.log("Request successful:", res.data);
+    } else {
+      // Request failed
+      console.error("Request failed:", res.statusText);
+    }
 
       setOpenForm(false); // Close form after successful submission
     } catch (error) {
