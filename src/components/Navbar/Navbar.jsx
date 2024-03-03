@@ -9,7 +9,7 @@ import { useContext } from "react";
 const buttonStyles = {
   display: "inline-block",
   padding: "10px 20px",
-  backgroundColor: "#007bff",
+  backgroundColor: "rgb(23, 39, 78)",
   color: "#fff",
   textDecoration: "none",
   borderRadius: "5px",
@@ -51,6 +51,32 @@ const Navbar = () => {
           <div className="line3"></div>
         </div>
         <ul className="nav-links">
+          {user && (
+            <li>
+              <div
+                style={{
+                  backgroundColor: "rgb(23, 39, 78)",
+                  color: "#fff",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  textAlign: "center",
+                  margin: '2vw',
+                  zIndex:20,
+                }}
+              >
+                <p
+                  style={{ fontSize: "1.2em", fontWeight: "bold", margin: "0" }}
+                >
+                  Welcome, {user.fullName}!
+                </p>
+                <p style={{ fontSize: "0.8em", margin: "0" }}>
+                  We&apos;re glad to have you here.
+                </p>
+              </div>
+            </li>
+          )}
+
           {user && !user?.admin && (
             <li>
               <Link href="/mynotes">My Notes</Link>
@@ -62,18 +88,18 @@ const Navbar = () => {
             </li>
           )}
           {!user && (
-            <li>
+           
               <Link href="/auth">
-                <div style={buttonStyles}>Login</div>
+                <div class="login-button" >Login</div>
               </Link>
-            </li>
+           
           )}
           {user && (
-            <li>
+           
               <Link href="/auth">
-                <div style={buttonStyles}>Sign out</div>
+                <div className="login-button">Sign out</div>
               </Link>
-            </li>
+           
           )}
           {/* <li>
             <Link href="#">Services</Link>
