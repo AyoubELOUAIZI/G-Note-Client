@@ -14,7 +14,10 @@ const TableView = () => {
   const { user } = useContext(AuthContext);
   const [notes, setNotes] = useState(null);
   const [openForm, setOpenForm] = useState(false);
-
+  const [noteToUpdate, setNoteToUpdate] = useState(null);
+  
+console.log("noteToUpdate")
+console.log(noteToUpdate)
   const formatDateTime = (dateTimeString) => {
     const dateParts = dateTimeString.split(/[-T:Z]/); // Split the date string
     const year = dateParts[0];
@@ -22,30 +25,43 @@ const TableView = () => {
     const day = dateParts[2];
     const hour = dateParts[3];
     const minute = dateParts[4];
-  
+
     // Construct the formatted date string
     const formattedDate = `${year}-${month}-${day} ${hour}:${minute}`;
-    
+
     return formattedDate;
   };
-  
 
+  function handleUpdateNote(noteToUpdate) {
+    console.log(noteToUpdate);
+    setNoteToUpdate(noteToUpdate);
+    setOpenForm(true);
+  }
+
+  function handleAddNote(){
+    setNoteToUpdate(null);
+    setOpenForm(true);
+  }
+
+  function fetchNotes(){
+     // Retrieve the notes for the user
+     axios
+     .get(`http://localhost:9080/g-note/api/notes/${user.id}`)
+     .then((response) => {
+       console.log(response);
+       setNotes(response.data);
+     })
+     .catch((error) => {
+       console.error("Error fetching notes:", error);
+     });
+  }
   useEffect(() => {
     if (!user || user?.admin) {
       //virify this later
       router.push("/auth");
       return;
     } else {
-      // Retrieve the notes for the user
-      axios
-        .get(`http://localhost:9080/g-note/api/notes/${user.id}`)
-        .then((response) => {
-          console.log(response);
-          setNotes(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching notes:", error);
-        });
+      fetchNotes();
     }
   }, [user]);
 
@@ -54,11 +70,16 @@ const TableView = () => {
       <div class="p-5 min-h-screen bg-gray-100">
         <div className="flex">
           <h1 class="text-xl mb-2">Your notes</h1>
-          <div onClick={(e) => setOpenForm(true)}>
+          <div onClick={(e) =>{handleAddNote()}}>
             <AddIcon />
           </div>
         </div>
-        <NoteForm openForm={openForm} setOpenForm={setOpenForm} />
+        <NoteForm
+          openForm={openForm}
+          setOpenForm={setOpenForm}
+          noteToUpdate={noteToUpdate}
+          fetchNotes={fetchNotes}
+        />
         {/* for large screen we use this */}
         <div class="overflow-auto rounded-lg shadow hidden md:block">
           <table class="w-full">
@@ -96,7 +117,7 @@ const TableView = () => {
                     {formatDateTime(note?.createdAt)}
                   </td>
                   <td class="p-3 text-sm  text-gray-700 whitespace-nowrap">
-                    <div onClick={(e) => setOpenForm(true)}>
+                    <div onClick={(e) => handleUpdateNote(note)}>
                       <UpdateIcon />
                     </div>
                   </td>
@@ -122,7 +143,7 @@ const TableView = () => {
                   <div class="text-gray-500">
                     {formatDateTime(note?.createdAt)}
                   </div>
-                  <div onClick={(e) => setOpenForm(true)}>
+                  <div onClick={(e) => handleUpdateNote(note)}>
                     <UpdateIcon />
                   </div>
                 </div>
