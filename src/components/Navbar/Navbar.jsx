@@ -32,11 +32,11 @@ const Navbar = () => {
       <nav>
         <Link
           href="/"
-          className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse logo"
+          className="flex items-center mb-0 sm:mb-0 space-x-3 rtl:space-x-reverse logo"
         >
-          {/* <Image src="/svgpngLogo.png" width={40} height={100} alt="Logo Image" /> */}
+          <Image src="/g-note-logo.png" width={40} height={100} alt="Logo Image" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            MyCONVERTER
+            G-Note
           </span>
         </Link>
         <div className="hamburger" onClick={() => handleHumburgerClicked()}>

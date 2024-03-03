@@ -5,6 +5,7 @@ import UpdateIcon from "./Icons/UpdateIcon";
 import AddIcon from "./Icons/AddIcon";
 import NoteForm from "./NoteForm";
 import AuthContext from "@/contexts/AuthContext";
+import axios from "axios";
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
 
@@ -14,25 +15,43 @@ const TableView = () => {
   const [notes, setNotes] = useState(null);
   const [openForm, setOpenForm] = useState(false);
 
+  const formatDateTime = (dateTimeString) => {
+    const dateParts = dateTimeString.split(/[-T:Z]/); // Split the date string
+    const year = dateParts[0];
+    const month = dateParts[1];
+    const day = dateParts[2];
+    const hour = dateParts[3];
+    const minute = dateParts[4];
+  
+    // Construct the formatted date string
+    const formattedDate = `${year}-${month}-${day} ${hour}:${minute}`;
+    
+    return formattedDate;
+  };
+  
+
   useEffect(() => {
     if (!user || user?.admin) {
       //virify this later
       router.push("/auth");
+      return;
+    } else {
+      // Retrieve the notes for the user
+      axios
+        .get(`http://localhost:9080/g-note/api/notes/${user.id}`)
+        .then((response) => {
+          console.log(response);
+          setNotes(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching notes:", error);
+        });
     }
-
-    setNotes([
-      { id: 1, content: "Note 1" },
-      { id: 2, content: "Note 2" },
-      { id: 4, content: "Note 3" },
-      { id: 5, content: "Note 3" },
-      { id: 6, content: "Note 3" },
-      { id: 7, content: "Note 3" },
-    ]);
-  }, []);
+  }, [user]);
 
   return (
     <div>
-      <div class="p-5 h-screen bg-gray-100">
+      <div class="p-5 min-h-screen bg-gray-100">
         <div className="flex">
           <h1 class="text-xl mb-2">Your notes</h1>
           <div onClick={(e) => setOpenForm(true)}>
@@ -64,17 +83,17 @@ const TableView = () => {
             </thead>
             <tbody class="divide-y divide-gray-100">
               {notes?.map((note) => (
-                <tr class="bg-white" key={note.id}>
+                <tr class="bg-white" key={note?.idNote}>
                   <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
                     <a href="#" class="font-bold text-blue-500 hover:underline">
-                      Physics Homework
+                      {note?.subject}
                     </a>
                   </td>
                   <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
-                    Reminder to complete...
+                    {note?.body}
                   </td>
                   <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
-                    16/10/2021
+                    {formatDateTime(note?.createdAt)}
                   </td>
                   <td class="p-3 text-sm  text-gray-700 whitespace-nowrap">
                     <div onClick={(e) => setOpenForm(true)}>
@@ -92,22 +111,22 @@ const TableView = () => {
         {/* for the midiam screen we use this  */}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
           {notes?.map((note) => (
-            <div key={note.id}>
+            <div key={note?.idNote}>
               <div class="bg-white space-y-3 p-4 rounded-lg shadow">
                 <div class="flex items-center space-x-2 text-sm">
                   <div>
                     <a href="#" class="text-blue-500 font-bold hover:underline">
-                      Physics Homework
+                      {note?.subject}
                     </a>
                   </div>
-                  <div class="text-gray-500">10/10/2021</div>
-                  <div>
+                  <div class="text-gray-500">
+                    {formatDateTime(note?.createdAt)}
+                  </div>
+                  <div onClick={(e) => setOpenForm(true)}>
                     <UpdateIcon />
                   </div>
                 </div>
-                <div class="text-sm text-gray-700">
-                  Kring New Fit office chair, mesh + PU, black
-                </div>
+                <div class="text-sm text-gray-700">{note?.body}</div>
                 <div class="text-sm font-medium text-black">
                   <DeleteIcon />
                 </div>
