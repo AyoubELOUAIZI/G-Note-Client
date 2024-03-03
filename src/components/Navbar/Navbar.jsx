@@ -5,17 +5,6 @@ import Link from "next/link";
 import AuthContext from "@/contexts/AuthContext"; // Update the path to AuthContext
 import { useContext } from "react";
 
-// Define CSS styles for the button-like appearance
-const buttonStyles = {
-  display: "inline-block",
-  padding: "10px 20px",
-  backgroundColor: "rgb(23, 39, 78)",
-  color: "#fff",
-  textDecoration: "none",
-  borderRadius: "5px",
-  border: "none",
-  cursor: "pointer",
-};
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
@@ -62,7 +51,6 @@ const Navbar = () => {
                   boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                   textAlign: "center",
                   margin: '2vw',
-                  zIndex:20,
                 }}
               >
                 <p
