@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Alert from "./Dialogs/Alert";
 import SpinerLoading from "./Icons/SpinerLoading";
 import Image from "next/image";
+import Toast from "./Dialogs/Toast";
 
 const Auth = () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -15,6 +16,12 @@ const Auth = () => {
     type: "", //warning //danger
     msg: "",
   });
+
+  //the code the toast message part
+  const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
+  const [isError, setIsError] = useState(false);
+
   useEffect(() => {
     //navigate to user page if already logged in
     if (user) {
@@ -66,6 +73,8 @@ const Auth = () => {
           }
         } else {
           setLogin(true);
+          setToastMsg(`Thanks ${fullName} Registration successful! Please wait while we verify your account.`);
+          setShowToast(true);
           console.log("you should be now in the login form");
         }
       }
@@ -107,6 +116,15 @@ const Auth = () => {
       return false;
     }
     if (!isLogin) {//means it is signup not login/signin
+
+      if (!fullName ) {
+        setAlert({
+          type: "danger",
+          msg: "Full name is required.",
+        });
+        return false;
+      }
+
       // Check if full name contains both first name and last name
       const names = fullName.trim().split(" ");
       if (names.length < 2) {
@@ -131,6 +149,14 @@ const Auth = () => {
 
   return (
     <div>
+      {/* toast */}
+      <Toast
+        setShowToast={setShowToast}
+        showToast={showToast}
+        toastMsg={toastMsg}
+        isError={isError}
+        setIsError={setIsError}
+      />
       {isLogin && (
         <div class="py-16 md:py-24">
           <form
