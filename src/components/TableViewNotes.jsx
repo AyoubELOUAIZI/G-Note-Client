@@ -19,7 +19,7 @@ const TableViewNotes = () => {
   const [openForm, setOpenForm] = useState(false);
   const [noteToUpdate, setNoteToUpdate] = useState(null);
   const [idNoteToDelete, setidNoteToDelete] = useState(null);
-  const [confirmDeleteNote, setConfirmDeleteNote] = useState(false);
+  const [confirmDeleteNote, setConfirmDelete] = useState(false);
   //the code the toast message part
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
@@ -131,7 +131,7 @@ const TableViewNotes = () => {
       console.log("not to delete is : " + idNoteToDelete);
       handleDeleteNote(idNoteToDelete);
     }
-    setConfirmDeleteNote(false);
+    setConfirmDelete(false);
     setidNoteToDelete(null);
   }, [confirmDeleteNote]);
 
@@ -139,7 +139,7 @@ const TableViewNotes = () => {
     <div>
       <ConfirmationDialog
         message={"Are you sure you want to delete this note?"}
-        setConfirmDeleteNote={setConfirmDeleteNote}
+        setConfirmDelete={setConfirmDelete}
       />
       <Toast
         setShowToast={setShowToast}

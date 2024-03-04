@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import DeleteIcon from "./Icons/DeleteIcon";
 import UpdateIcon from "./Icons/UpdateIcon";
 import VerifiedUserIcon from "./Icons/VerifiedUserIcon";
-import NoteForm from "./NoteForm";
+import UserForm from "./UserForm";
 import AuthContext from "@/contexts/AuthContext";
 import axios from "axios";
 import { useContext } from "react";
@@ -16,12 +16,14 @@ import UnverifiedUser from "./Icons/UnverifiedUser";
 const TableViewUsers = () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const router = useRouter();
+  //!this state is for the currect authenticated user witch is the admin in this case
   const { user } = useContext(AuthContext);
-  const [notes, setNotes] = useState(null);
+  //!the user means the user from the list of users in the table
+  const [Users, setUsers] = useState(null);
   const [openForm, setOpenForm] = useState(false);
-  const [noteToUpdate, setNoteToUpdate] = useState(null);
-  const [idNoteToDelete, setidNoteToDelete] = useState(null);
-  const [confirmDeleteNote, setConfirmDeleteNote] = useState(false);
+  const [UserToUpdate, setUserToUpdate] = useState(null);
+  const [idUserToDelete, setidUserToDelete] = useState(null);
+  const [confirmDeleteUser, setConfirmDelete] = useState(false);
   //the code the toast message part
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
@@ -41,27 +43,27 @@ const TableViewUsers = () => {
     return formattedDate;
   };
 
-  function handleUpdateNote(noteToUpdate) {
-    console.log(noteToUpdate);
-    setNoteToUpdate(noteToUpdate);
+  function handleUpdateUser(UserToUpdate) {
+    console.log(UserToUpdate);
+    setUserToUpdate(UserToUpdate);
     setOpenForm(true);
   }
 
-  function handleAddNote() {
-    setNoteToUpdate(null);
+  function handleAddUser() {
+    setUserToUpdate(null);
     setOpenForm(true);
   }
 
   function fetchAllUsers() {
-    // Retrieve the notes for the user
+    // Retrieve the Users for the user
     axios
       .get(`${baseUrl}/api/users`)
       .then((response) => {
         console.log(response);
-        setNotes(response.data);
+        setUsers(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching notes:", error);
+        console.error("Error fetching Users:", error);
       });
   }
   useEffect(() => {
@@ -79,8 +81,8 @@ const TableViewUsers = () => {
     document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
   };
 
-  function handleDeleteNote(id) {
-    console.log("handleDeleteNote function starts");
+  function handleDeleteUser(id) {
+    console.log("handleDeleteUser function starts");
     // Display confirmation dialog before deleting
     // Here you can implement your confirmation dialog logic
     // For example:
@@ -89,59 +91,59 @@ const TableViewUsers = () => {
 
     // Proceeding with deletion without confirmation dialog for now
     axios
-      .delete(`${baseUrl}/api/notes/${id}`)
+      .delete(`${baseUrl}/api/users/${id}`)
       .then((response) => {
         if (response.status === 204 || response.status === 200) {
-          console.log("Note deleted successfully");
-          setToastMsg("Note deleted successfully");
+          console.log("User deleted successfully");
+          setToastMsg("User deleted successfully");
           setShowToast(true);
 
-          // Fetch notes again after deletion
+          // Fetch Users again after deletion
           fetchAllUsers();
         } else {
-          console.error("Unexpected response while deleting note:", response);
+          console.error("Unexpected response while deleting User:", response);
         }
       })
       .catch((error) => {
         if (error.response) {
           // The request was made and the server responded with a status code
           console.error(
-            "Error deleting note. Server responded with status code:",
+            "Error deleting User. Server responded with status code:",
             error.response.status
           );
         } else if (error.request) {
           // The request was made but no response was received
           console.error(
-            "Error deleting note. No response received from server."
+            "Error deleting User. No response received from server."
           );
         } else {
           // Something happened in setting up the request that triggered an error
-          console.error("Error deleting note:", error.message);
+          console.error("Error deleting User:", error.message);
         }
       });
   }
 
-  function startHandleDeleteNote(note) {
-    setidNoteToDelete(note.idNote);
+  function startHandleDeleteUser(User) {
+    setidUserToDelete(User.id);
     handleOpenModal();
   }
 
   useEffect(() => {
-    console.log("the use effect is starting for delete note ...");
-    if (confirmDeleteNote === true && idNoteToDelete != null) {
-      console.log(confirmDeleteNote);
-      console.log("not to delete is : " + idNoteToDelete);
-      handleDeleteNote(idNoteToDelete);
+    console.log("the use effect is starting for delete User ...");
+    if (confirmDeleteUser === true && idUserToDelete != null) {
+      console.log(confirmDeleteUser);
+      console.log("not to delete is : " + idUserToDelete);
+      handleDeleteUser(idUserToDelete);
     }
-    setConfirmDeleteNote(false);
-    setidNoteToDelete(null);
-  }, [confirmDeleteNote]);
+    setConfirmDelete(false);
+    setidUserToDelete(null);
+  }, [confirmDeleteUser]);
 
   return (
     <div>
       <ConfirmationDialog
-        message={"Are you sure you want to delete this note?"}
-        setConfirmDeleteNote={setConfirmDeleteNote}
+        message={"Are you sure you want to delete this user?"}
+        setConfirmDelete={setConfirmDelete}
       />
       <Toast
         setShowToast={setShowToast}
@@ -155,16 +157,16 @@ const TableViewUsers = () => {
           <h1 class="text-xl mb-2">List users</h1>
           <div className="border-slate-500 border m-1"
             onClick={(e) => {
-              handleAddNote();
+              handleAddUser();
             }}
           >
             <AddUserIcon />
           </div>
         </div>
-        <NoteForm
+        <UserForm
           openForm={openForm}
           setOpenForm={setOpenForm}
-          noteToUpdate={noteToUpdate}
+          UserToUpdate={UserToUpdate}
           fetchAllUsers={fetchAllUsers}
           userId={user?.id}
           // for toast
@@ -186,8 +188,8 @@ const TableViewUsers = () => {
                 <th class="p-3 text-sm font-semibold tracking-wide text-left">
                   Email
                 </th>
-                <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
-                  User Role
+                <th class="w-24 p-3  text-sm font-semibold tracking-wide text-center">
+                  Role
                 </th>
                 <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
                 Verified
@@ -204,7 +206,7 @@ const TableViewUsers = () => {
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-              {notes?.map((user) => (
+              {Users?.map((user) => (
                 <tr class="bg-white" key={user?.id}>
                   <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
                     <a href="#" class="font-bold text-blue-500 hover:underline">
@@ -238,14 +240,14 @@ const TableViewUsers = () => {
                     {formatDateTime(user?.createdAt)}
                   </td>
                   <td class="p-3 text-sm  text-gray-700 whitespace-nowrap">
-                    <div onClick={(e) => handleUpdateNote(note)}>
+                    <div onClick={(e) => handleUpdateUser(user)}>
                       <UpdateIcon />
                     </div>
                   </td>
                   <td class="p-3 text-sm flex justify-center  text-gray-700 whitespace-nowrap">
                     <div
                       onClick={(e) => {
-                        startHandleDeleteNote(note);
+                        startHandleDeleteUser(user);
                       }}
                     >
                       <DeleteIcon />
@@ -258,7 +260,7 @@ const TableViewUsers = () => {
         </div>
         {/* for the midiam screen we use this  */}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
-          {notes?.map((user) => (
+          {Users?.map((user) => (
             <div key={user?.id}>
               <div class="bg-white space-y-3 p-4 rounded-lg shadow">
                 <div class="flex items-center space-x-2 text-sm">
@@ -270,7 +272,7 @@ const TableViewUsers = () => {
                   <div class="text-gray-500">
                     {formatDateTime(user?.createdAt)}
                   </div>
-                  <div onClick={(e) => handleUpdateNote(user)}>
+                  <div onClick={(e) => handleUpdateUser(user)}>
                     <UpdateIcon />
                   </div>
                 </div>
@@ -290,7 +292,7 @@ const TableViewUsers = () => {
                 <div class="text-sm font-medium text-black">
                   <div
                     onClick={(e) => {
-                      startHandleDeleteNote(note);
+                      startHandleDeleteUser(user);
                     }}
                   >
                     <DeleteIcon />

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-const ConfirmationDialog = ({message,setConfirmDeleteNote}) => {
+const ConfirmationDialog = ({message,setConfirmDelete}) => {
   const openModal = (modalId) => {
     document.getElementById(modalId).style.display = "block";
     document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
@@ -22,7 +22,7 @@ const ConfirmationDialog = ({message,setConfirmDeleteNote}) => {
   const handleCloseModal = (e) => {
     closeModal("modelConfirm");
     console.log("the user closed modal with status : " + e);
-    setConfirmDeleteNote(e);
+    setConfirmDelete(e);
   };
 
   return (
