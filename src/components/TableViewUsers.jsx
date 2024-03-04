@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import DeleteIcon from "./Icons/DeleteIcon";
 import UpdateIcon from "./Icons/UpdateIcon";
-import AddIcon from "./Icons/AddIcon";
+import VerifiedUserIcon from "./Icons/VerifiedUserIcon";
 import NoteForm from "./NoteForm";
 import AuthContext from "@/contexts/AuthContext";
 import axios from "axios";
@@ -10,6 +10,8 @@ import { useContext } from "react";
 import { useRouter } from "next/navigation";
 import ConfirmationDialog from "./Dialogs/ConfirmationDialog";
 import Toast from "./Dialogs/Toast";
+import AddUserIcon from "./Icons/AddUserIcon";
+import UnverifiedUser from "./Icons/UnverifiedUser";
 
 const TableViewUsers = () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -30,7 +32,7 @@ const TableViewUsers = () => {
     const year = dateParts[0];
     const month = dateParts[1];
     const day = dateParts[2];
-    const hour = dateParts[3];
+    const hour = dateParts[3]; //why the hour is send from the backend with -1 maybe serialization
     const minute = dateParts[4];
 
     // Construct the formatted date string
@@ -50,10 +52,10 @@ const TableViewUsers = () => {
     setOpenForm(true);
   }
 
-  function fetchNotes() {
+  function fetchAllUsers() {
     // Retrieve the notes for the user
     axios
-      .get(`${baseUrl}/api/notes/${user.id}`)
+      .get(`${baseUrl}/api/users`)
       .then((response) => {
         console.log(response);
         setNotes(response.data);
@@ -68,7 +70,7 @@ const TableViewUsers = () => {
       router.push("/auth");
       return;
     } else {
-      fetchNotes();
+      fetchAllUsers();
     }
   }, [user]);
 
@@ -91,11 +93,11 @@ const TableViewUsers = () => {
       .then((response) => {
         if (response.status === 204 || response.status === 200) {
           console.log("Note deleted successfully");
-          setToastMsg("Note deleted successfully")
+          setToastMsg("Note deleted successfully");
           setShowToast(true);
 
           // Fetch notes again after deletion
-          fetchNotes();
+          fetchAllUsers();
         } else {
           console.error("Unexpected response while deleting note:", response);
         }
@@ -149,21 +151,21 @@ const TableViewUsers = () => {
         setIsError={setIsError}
       />
       <div class="p-5 min-h-screen bg-gray-100">
-        <div className="flex">
-          <h1 class="text-xl mb-2">Your notes</h1>
+        <div className="flex items-center">
+          <h1 class="text-xl mb-2">List users</h1>
           <div
             onClick={(e) => {
               handleAddNote();
             }}
           >
-            <AddIcon />
+            <AddUserIcon />
           </div>
         </div>
         <NoteForm
           openForm={openForm}
           setOpenForm={setOpenForm}
           noteToUpdate={noteToUpdate}
-          fetchNotes={fetchNotes}
+          fetchAllUsers={fetchAllUsers}
           userId={user?.id}
           // for toast
           setShowToast={setShowToast}
@@ -178,14 +180,20 @@ const TableViewUsers = () => {
           <table class="w-full">
             <thead class="bg-gray-50 border-b-2 border-gray-200">
               <tr>
-                <th class="w-20 p-3 text-sm font-semibold tracking-wide text-left">
-                  Subject
+                <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
+                  Full name
                 </th>
                 <th class="p-3 text-sm font-semibold tracking-wide text-left">
-                  Details
+                  Email
                 </th>
                 <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
-                  Date
+                  User Role
+                </th>
+                <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
+                  Subscribed
+                </th>
+                <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
+                  Created At
                 </th>
                 <th class="w-16 p-3 text-sm font-semibold tracking-wide text-left">
                   Edit
@@ -196,18 +204,28 @@ const TableViewUsers = () => {
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-              {notes?.map((note) => (
-                <tr class="bg-white" key={note?.idNote}>
+              {notes?.map((user) => (
+                <tr class="bg-white" key={user?.id}>
                   <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
                     <a href="#" class="font-bold text-blue-500 hover:underline">
-                      {note?.subject}
+                      {user?.fullName}
                     </a>
                   </td>
                   <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
-                    {note?.body}
+                    {user?.email}
                   </td>
                   <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
-                    {formatDateTime(note?.createdAt)}
+                    <span class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                      Admin
+                    </span>
+                  </td>
+                  <td class="p-3 text-sm text-gray-700  whitespace-nowrap">
+                    {/* <span class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50"> */}
+                    { user?.subscribed? <VerifiedUserIcon />:<UnverifiedUser />}
+                    {/* </span> */}
+                  </td>
+                  <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                    {formatDateTime(user?.createdAt)}
                   </td>
                   <td class="p-3 text-sm  text-gray-700 whitespace-nowrap">
                     <div onClick={(e) => handleUpdateNote(note)}>
@@ -230,31 +248,37 @@ const TableViewUsers = () => {
         </div>
         {/* for the midiam screen we use this  */}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
-          {notes?.map((note) => (
-            <div key={note?.idNote}>
+          {notes?.map((user) => (
+            <div key={user?.id}>
               <div class="bg-white space-y-3 p-4 rounded-lg shadow">
                 <div class="flex items-center space-x-2 text-sm">
                   <div>
                     <a href="#" class="text-blue-500 font-bold hover:underline">
-                      {note?.subject}
+                      {user?.fullName}
                     </a>
                   </div>
                   <div class="text-gray-500">
-                    {formatDateTime(note?.createdAt)}
+                    {formatDateTime(user?.createdAt)}
                   </div>
-                  <div onClick={(e) => handleUpdateNote(note)}>
+                  <div onClick={(e) => handleUpdateNote(user)}>
                     <UpdateIcon />
                   </div>
                 </div>
-                <div class="text-sm text-gray-700">{note?.body}</div>
+                <div class="text-sm text-gray-700 flex">
+                  {user?.email}
+                  <span class="p-1.5 text-xs ml-1 font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                    Admin
+                  </span>
+                { user?.subscribed? <VerifiedUserIcon />:<UnverifiedUser />}
+                </div>
                 <div class="text-sm font-medium text-black">
-                <div
-                      onClick={(e) => {
-                        startHandleDeleteNote(note);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </div>
+                  <div
+                    onClick={(e) => {
+                      startHandleDeleteNote(note);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </div>
                 </div>
               </div>
             </div>
