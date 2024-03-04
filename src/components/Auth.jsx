@@ -2,12 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import AuthContext from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import Alert from "./Dialogs/Alert";
+import SpinerLoading from "./Icons/SpinerLoading";
 
 const Auth = () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const router = useRouter();
   const { user, setUser } = useContext(AuthContext);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState({
+    type: "", //warning //danger
+    msg: "",
+  });
   useEffect(() => {
     //navigate to user page if already logged in
     if (user) {
@@ -27,7 +33,7 @@ const Auth = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
       const response = await axios.post(
         `${baseUrl}/api/users/${
@@ -40,20 +46,35 @@ const Auth = () => {
           confirmPassword,
         }
       );
-      console.log(response);
+      // console.log(response);
       if (response.data) {
         console.log(response.data);
-        setUser(response.data);
-        console.log("🚀 ~ Auth ~ user:", user);
-        router.push("/mynotes");
+        if(isLogin){
+          setUser(response.data);
+          if(!response.data.admin) {
+            router.push("/mynotes");
+          }else{
+            router.push("/dashboard");
+          }
+        }else{
+          setLogin(false);
+        }
       }
 
       // Add logic to handle successful sign-in/sign-up
     } catch (error) {
       console.log(error);
-      if (error?.response?.data) console.error(error.response.data);
+      if (error?.response?.data){
+       console.error(error.response.data);
+       setAlert({
+        type: 'danger',
+        msg: error.response.data,
+        });
+        
+      }
       // Add logic to handle sign-in/sign-up errors
     }
+    setIsLoading(false);
   };
 
   return (
@@ -84,6 +105,9 @@ const Auth = () => {
                 </a>
                 <span class="border-b w-1/5 lg:w-1/4"></span>
               </div>
+              <div className="flex justify-center">
+              <Alert alert={alert} setAlert={setAlert}/>
+              </div>
               <div class="mt-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">
                   Email Address
@@ -113,8 +137,9 @@ const Auth = () => {
               <div class="mt-8">
                 <button
                   type="submit"
-                  class="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
+                  class="flex justify-center items-center bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
                 >
+                 { isLoading && <SpinerLoading/>}
                   Sign In
                 </button>
               </div>
@@ -220,9 +245,11 @@ const Auth = () => {
               <div class="mt-8">
                 <button
                   type="submit"
-                  class="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
+                  class="flex justify-center items-center bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
                 >
+                  { isLoading && <SpinerLoading/>}
                   Sign Up
+
                 </button>
               </div>
               <div class="mt-4 flex items-center justify-between">
