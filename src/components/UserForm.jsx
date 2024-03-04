@@ -27,8 +27,8 @@ const UserForm = ({
       setEmail(userToUpdate.email);
       setPassword(userToUpdate.password);
       setFullName(userToUpdate.fullName);
-      setIsAdmin(userToUpdate.isAdmin);
-      setIsVerified(userToUpdate.isVerified);
+      setIsAdmin(userToUpdate.admin);
+      setIsVerified(userToUpdate.subscribed);
     } else {
       // Reset form fields when userToUpdate is null (for adding new user)
       setEmail("");

@@ -166,7 +166,7 @@ const TableViewUsers = () => {
         <UserForm
           openForm={openForm}
           setOpenForm={setOpenForm}
-          UserToUpdate={UserToUpdate}
+          userToUpdate={UserToUpdate}
           fetchAllUsers={fetchAllUsers}
           userId={user?.id}
           // for toast
