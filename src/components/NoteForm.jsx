@@ -9,7 +9,12 @@ const NoteForm = ({
   fetchNotes,
   userId,
   // for toast
-  showToast, setShowToast, toastMsg,setToastMsg, isError, setIsError
+  showToast,
+  setShowToast,
+  toastMsg,
+  setToastMsg,
+  isError,
+  setIsError,
 }) => {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
@@ -49,13 +54,13 @@ const NoteForm = ({
           // Request successful
           fetchNotes(); // Assuming fetchNotes is a function to reload notes
           console.log("note updated successfuly:", res.data);
-          setToastMsg("note updated successfuly")
+          setToastMsg("note updated successfuly");
         } else {
           // Request failed
           console.error("Request failed:", res.statusText);
 
           setIsError(true);
-          setToastMsg("Error to add new note")
+          setToastMsg("Error to add new note");
         }
       } else {
         res = await axios.post(`${baseUrl}/api/notes`, noteData);
@@ -63,13 +68,13 @@ const NoteForm = ({
           // Request successful
           fetchNotes(); // Assuming fetchNotes is a function to reload notes
           console.log("new note add successfuly:", res.data);
-          setToastMsg("new note add successfuly")
+          setToastMsg("new note add successfuly");
         } else {
           // Request failed
           console.error("Request failed:", res.statusText);
 
           setIsError(true);
-          setToastMsg("Error to add new note")
+          setToastMsg("Error to add new note");
         }
       }
       setShowToast(true);
@@ -100,9 +105,22 @@ const NoteForm = ({
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Enter note subject..."
               value={subject}
-              onChange={(e) => setSubject(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length <= 30) {
+                  setSubject(e.target.value);
+                } else {
+                  setIsError(true);
+                  setToastMsg(
+                    "The maximum number of characters of note subject is 30."
+                  );
+                  setShowToast(true);
+                }
+              }}
               required
             />
+            <p className="flex justify-end text-sm text-gray-900 dark:text-white">
+              {subject.length}/30
+            </p>
           </div>
           <div className="mb-5">
             <label
@@ -117,9 +135,23 @@ const NoteForm = ({
               className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Enter note body..."
               value={body}
-              onChange={(e) => setBody(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length <= 300) {
+                  setBody(e.target.value);
+                } else {
+                  console.log("kdsjfkd");
+                  setIsError(true);
+                  setToastMsg(
+                    "The maximum number of characters of note body is 300."
+                  );
+                  setShowToast(true);
+                }
+              }}
               required
             ></textarea>
+            <p className="flex justify-end text-sm text-gray-900 dark:text-white">
+              {body.length}/300
+            </p>
           </div>
           <div className="flex justify-between">
             <button

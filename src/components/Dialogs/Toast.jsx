@@ -11,7 +11,7 @@ const Toast = ({ showToast, setShowToast, toastMsg, isError, setIsError }) => {
     const timer = setTimeout(() => {
       setShowToast(false);
       setIsError(false);
-    }, 6000);
+    }, 7000);
     return () => clearTimeout(timer);
   }, [showToast]);
 
