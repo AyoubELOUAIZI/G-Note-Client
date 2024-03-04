@@ -151,9 +151,9 @@ const TableViewUsers = () => {
         setIsError={setIsError}
       />
       <div class="p-5 min-h-screen bg-gray-100">
-        <div className="flex items-center">
+        <div className="flex items-end justify-between">
           <h1 class="text-xl mb-2">List users</h1>
-          <div
+          <div className="border-slate-500 border m-1"
             onClick={(e) => {
               handleAddNote();
             }}
@@ -190,7 +190,7 @@ const TableViewUsers = () => {
                   User Role
                 </th>
                 <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
-                  Subscribed
+                Verified
                 </th>
                 <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
                   Created At
@@ -215,13 +215,23 @@ const TableViewUsers = () => {
                     {user?.email}
                   </td>
                   <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
-                    <span class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
-                      Admin
-                    </span>
+                    {user?.admin ? (
+                      <span class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                        Admin
+                      </span>
+                    ) : (
+                      <span class="p-1.5 text-xs font-medium uppercase tracking-wider text-orange-800 bg-orange-200 rounded-lg bg-opacity-50">
+                        client
+                      </span>
+                    )}
                   </td>
                   <td class="p-3 text-sm text-gray-700  whitespace-nowrap">
                     {/* <span class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50"> */}
-                    { user?.subscribed? <VerifiedUserIcon />:<UnverifiedUser />}
+                    {user?.subscribed ? (
+                      <VerifiedUserIcon />
+                    ) : (
+                      <UnverifiedUser />
+                    )}
                     {/* </span> */}
                   </td>
                   <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
@@ -266,10 +276,16 @@ const TableViewUsers = () => {
                 </div>
                 <div class="text-sm text-gray-700 flex">
                   {user?.email}
-                  <span class="p-1.5 text-xs ml-1 font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
-                    Admin
-                  </span>
-                { user?.subscribed? <VerifiedUserIcon />:<UnverifiedUser />}
+                  {user?.admin ? (
+                      <span class="p-1.5 ml-1 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                        Admin
+                      </span>
+                    ) : (
+                      <span class="p-1.5 ml-1 text-xs font-medium uppercase tracking-wider text-orange-800 bg-orange-200 rounded-lg bg-opacity-50">
+                        client
+                      </span>
+                    )}
+                  {user?.subscribed ? <VerifiedUserIcon /> : <UnverifiedUser />}
                 </div>
                 <div class="text-sm font-medium text-black">
                   <div
