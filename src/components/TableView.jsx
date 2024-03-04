@@ -8,6 +8,7 @@ import AuthContext from "@/contexts/AuthContext";
 import axios from "axios";
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
+import ConfirmationDialog from "./Dialogs/ConfirmationDialog";
 
 const TableView = () => {
   const router = useRouter();
@@ -15,9 +16,9 @@ const TableView = () => {
   const [notes, setNotes] = useState(null);
   const [openForm, setOpenForm] = useState(false);
   const [noteToUpdate, setNoteToUpdate] = useState(null);
-  
-console.log("noteToUpdate")
-console.log(noteToUpdate)
+
+  console.log("noteToUpdate");
+  console.log(noteToUpdate);
   const formatDateTime = (dateTimeString) => {
     const dateParts = dateTimeString.split(/[-T:Z]/); // Split the date string
     const year = dateParts[0];
@@ -38,22 +39,22 @@ console.log(noteToUpdate)
     setOpenForm(true);
   }
 
-  function handleAddNote(){
+  function handleAddNote() {
     setNoteToUpdate(null);
     setOpenForm(true);
   }
 
-  function fetchNotes(){
-     // Retrieve the notes for the user
-     axios
-     .get(`http://localhost:9080/g-note/api/notes/${user.id}`)
-     .then((response) => {
-       console.log(response);
-       setNotes(response.data);
-     })
-     .catch((error) => {
-       console.error("Error fetching notes:", error);
-     });
+  function fetchNotes() {
+    // Retrieve the notes for the user
+    axios
+      .get(`http://localhost:9080/g-note/api/notes/${user.id}`)
+      .then((response) => {
+        console.log(response);
+        setNotes(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching notes:", error);
+      });
   }
   useEffect(() => {
     if (!user || user?.admin) {
@@ -65,12 +66,23 @@ console.log(noteToUpdate)
     }
   }, [user]);
 
+ 
+  const handleOpenModal = () => {
+    document.getElementById("modelConfirm").style.display = "block";
+    document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
+  };
+
   return (
     <div>
+      <ConfirmationDialog />
       <div class="p-5 min-h-screen bg-gray-100">
         <div className="flex">
           <h1 class="text-xl mb-2">Your notes</h1>
-          <div onClick={(e) =>{handleAddNote()}}>
+          <div
+            onClick={(e) => {
+              handleAddNote();
+            }}
+          >
             <AddIcon />
           </div>
         </div>
@@ -123,7 +135,13 @@ console.log(noteToUpdate)
                     </div>
                   </td>
                   <td class="p-3 text-sm flex justify-center  text-gray-700 whitespace-nowrap">
-                    <DeleteIcon />
+                    <div
+                      onClick={(e) => {
+                        handleOpenModal();
+                      }}
+                    >
+                      <DeleteIcon />
+                    </div>
                   </td>
                 </tr>
               ))}
