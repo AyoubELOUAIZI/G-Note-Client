@@ -4,6 +4,7 @@ import AuthContext from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
 const Auth = () => {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const router = useRouter();
   const { user, setUser } = useContext(AuthContext);
 
@@ -29,7 +30,7 @@ const Auth = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:9080/g-note/api/users/${
+        `${baseUrl}/api/users/${
           isLogin ? "signin" : "signup"
         }`,
         {
