@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CloseIcon from "./Icons/CloseIcon";
 
-const NoteForm = ({ openForm, setOpenForm, noteToUpdate,fetchNotes,userId }) => {
+const NoteForm = ({
+  openForm,
+  setOpenForm,
+  noteToUpdate,
+  fetchNotes,
+  userId,
+  // for toast
+  showToast, setShowToast, toastMsg,setToastMsg, isError, setIsError
+}) => {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
 
@@ -20,7 +28,12 @@ const NoteForm = ({ openForm, setOpenForm, noteToUpdate,fetchNotes,userId }) => 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const noteData = {idNote:noteToUpdate?noteToUpdate.idNote:0, subject: subject, body: body ,ownerId:userId};
+    const noteData = {
+      idNote: noteToUpdate ? noteToUpdate.idNote : 0,
+      subject: subject,
+      body: body,
+      ownerId: userId,
+    };
 
     try {
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -32,20 +45,36 @@ const NoteForm = ({ openForm, setOpenForm, noteToUpdate,fetchNotes,userId }) => 
       let res;
       if (noteToUpdate) {
         res = await axios.put(`${baseUrl}/api/notes`, noteData);
+        if (res.status >= 200 && res.status < 300) {
+          // Request successful
+          fetchNotes(); // Assuming fetchNotes is a function to reload notes
+          console.log("note updated successfuly:", res.data);
+          setToastMsg("note updated successfuly")
+        } else {
+          // Request failed
+          console.error("Request failed:", res.statusText);
+
+          setIsError(true);
+          setToastMsg("Error to add new note")
+        }
       } else {
         res = await axios.post(`${baseUrl}/api/notes`, noteData);
+        if (res.status >= 200 && res.status < 300) {
+          // Request successful
+          fetchNotes(); // Assuming fetchNotes is a function to reload notes
+          console.log("new note add successfuly:", res.data);
+          setToastMsg("new note add successfuly")
+        } else {
+          // Request failed
+          console.error("Request failed:", res.statusText);
+
+          setIsError(true);
+          setToastMsg("Error to add new note")
+        }
       }
-      console.log('res')
-      console.log(res)
-      
-    if (res.status >= 200 && res.status < 300) {
-      // Request successful
-      fetchNotes(); // Assuming fetchNotes is a function to reload notes
-      console.log("Request successful:", res.data);
-    } else {
-      // Request failed
-      console.error("Request failed:", res.statusText);
-    }
+      setShowToast(true);
+      console.log("res");
+      console.log(res);
 
       setOpenForm(false); // Close form after successful submission
     } catch (error) {

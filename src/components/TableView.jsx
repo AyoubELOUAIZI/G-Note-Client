@@ -9,16 +9,22 @@ import axios from "axios";
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
 import ConfirmationDialog from "./Dialogs/ConfirmationDialog";
+import Toast from "./Dialogs/Toast";
 
 const TableView = () => {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const router = useRouter();
   const { user } = useContext(AuthContext);
   const [notes, setNotes] = useState(null);
   const [openForm, setOpenForm] = useState(false);
   const [noteToUpdate, setNoteToUpdate] = useState(null);
+  const [idNoteToDelete, setidNoteToDelete] = useState(null);
+  const [confirmDeleteNote, setConfirmDeleteNote] = useState(false);
+  //the code the toast message part
+  const [showToast, setShowToast] = useState(true);
+  const [toastMsg, setToastMsg] = useState("simple message for test toast");
+  const [isError, setIsError] = useState(false);
 
-  console.log("noteToUpdate");
-  console.log(noteToUpdate);
   const formatDateTime = (dateTimeString) => {
     const dateParts = dateTimeString.split(/[-T:Z]/); // Split the date string
     const year = dateParts[0];
@@ -47,7 +53,7 @@ const TableView = () => {
   function fetchNotes() {
     // Retrieve the notes for the user
     axios
-      .get(`http://localhost:9080/g-note/api/notes/${user.id}`)
+      .get(`${baseUrl}/api/notes/${user.id}`)
       .then((response) => {
         console.log(response);
         setNotes(response.data);
@@ -66,15 +72,82 @@ const TableView = () => {
     }
   }, [user]);
 
- 
   const handleOpenModal = () => {
     document.getElementById("modelConfirm").style.display = "block";
     document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
   };
 
+  function handleDeleteNote(id) {
+    console.log("handleDeleteNote function starts");
+    // Display confirmation dialog before deleting
+    // Here you can implement your confirmation dialog logic
+    // For example:
+    // setOpenConfirmationDialog(true); // Show confirmation dialog
+    // When confirmed, proceed with deletion
+
+    // Proceeding with deletion without confirmation dialog for now
+    axios
+      .delete(`${baseUrl}/api/notes/${id}`)
+      .then((response) => {
+        if (response.status === 204 || response.status === 200) {
+          console.log("Note deleted successfully");
+          setToastMsg("Note deleted successfully")
+          setShowToast(true);
+
+          // Fetch notes again after deletion
+          fetchNotes();
+        } else {
+          console.error("Unexpected response while deleting note:", response);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          console.error(
+            "Error deleting note. Server responded with status code:",
+            error.response.status
+          );
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error(
+            "Error deleting note. No response received from server."
+          );
+        } else {
+          // Something happened in setting up the request that triggered an error
+          console.error("Error deleting note:", error.message);
+        }
+      });
+  }
+
+  function startHandleDeleteNote(note) {
+    setidNoteToDelete(note.idNote);
+    handleOpenModal();
+  }
+
+  useEffect(() => {
+    console.log("the use effect is starting for delete note ...");
+    if (confirmDeleteNote === true && idNoteToDelete != null) {
+      console.log(confirmDeleteNote);
+      console.log("not to delete is : " + idNoteToDelete);
+      handleDeleteNote(idNoteToDelete);
+    }
+    setConfirmDeleteNote(false);
+    setidNoteToDelete(null);
+  }, [confirmDeleteNote]);
+
   return (
     <div>
-      <ConfirmationDialog />
+      <ConfirmationDialog
+        message={"Are you sure you want to delete this note?"}
+        setConfirmDeleteNote={setConfirmDeleteNote}
+      />
+      <Toast
+        setShowToast={setShowToast}
+        showToast={showToast}
+        toastMsg={toastMsg}
+        isError={isError}
+        setIsError={setIsError}
+      />
       <div class="p-5 min-h-screen bg-gray-100">
         <div className="flex">
           <h1 class="text-xl mb-2">Your notes</h1>
@@ -92,6 +165,13 @@ const TableView = () => {
           noteToUpdate={noteToUpdate}
           fetchNotes={fetchNotes}
           userId={user?.id}
+          // for toast
+          setShowToast={setShowToast}
+          showToast={showToast}
+          toastMsg={toastMsg}
+          setToastMsg={setToastMsg}
+          isError={isError}
+          setIsError={setIsError}
         />
         {/* for large screen we use this */}
         <div class="overflow-auto rounded-lg shadow hidden md:block">
@@ -137,7 +217,7 @@ const TableView = () => {
                   <td class="p-3 text-sm flex justify-center  text-gray-700 whitespace-nowrap">
                     <div
                       onClick={(e) => {
-                        handleOpenModal();
+                        startHandleDeleteNote(note);
                       }}
                     >
                       <DeleteIcon />

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-const ConfirmationDialog = () => {
+const ConfirmationDialog = ({message,setConfirmDeleteNote}) => {
   const openModal = (modalId) => {
     document.getElementById(modalId).style.display = "block";
     document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
@@ -22,7 +22,7 @@ const ConfirmationDialog = () => {
   const handleCloseModal = (e) => {
     closeModal("modelConfirm");
     console.log("the user closed modal with status : " + e);
-    return e;
+    setConfirmDeleteNote(e);
   };
 
   return (
@@ -80,7 +80,8 @@ const ConfirmationDialog = () => {
               ></path>
             </svg>
             <h3 class="text-xl font-normal text-gray-500 mt-5 mb-6">
-              Are you sure you want to delete this user?
+              {/* Are you sure you want to delete this user? */}
+             { message}
             </h3>
             <a
               href="#"
