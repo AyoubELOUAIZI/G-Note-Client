@@ -4,6 +4,7 @@ import AuthContext from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import Alert from "./Dialogs/Alert";
 import SpinerLoading from "./Icons/SpinerLoading";
+import Image from "next/image";
 
 const Auth = () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -34,11 +35,17 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
+    //validate data depending on signin or signup before trying the api
+    // Validate form data
+    if (!validateForm()) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await axios.post(
-        `${baseUrl}/api/users/${
-          isLogin ? "signin" : "signup"
-        }`,
+        `${baseUrl}/api/users/${isLogin ? "signin" : "signup"}`,
         {
           email,
           password,
@@ -49,32 +56,77 @@ const Auth = () => {
       // console.log(response);
       if (response.data) {
         console.log(response.data);
-        if(isLogin){
+        setAlert(null);
+        if (isLogin) {
           setUser(response.data);
-          if(!response.data.admin) {
+          if (!response.data.admin) {
             router.push("/mynotes");
-          }else{
+          } else {
             router.push("/dashboard");
           }
-        }else{
-          setLogin(false);
+        } else {
+          setLogin(true);
+          console.log("you should be now in the login form");
         }
       }
 
       // Add logic to handle successful sign-in/sign-up
     } catch (error) {
       console.log(error);
-      if (error?.response?.data){
-       console.error(error.response.data);
-       setAlert({
-        type: 'danger',
-        msg: error.response.data,
+      if (error?.response?.data) {
+        console.error(error.response.data);
+        setAlert({
+          type: "danger",
+          msg: error.response.data,
         });
-        
       }
       // Add logic to handle sign-in/sign-up errors
     }
     setIsLoading(false);
+  };
+
+  const validateForm = () => {
+    // Regular expression for email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Check if email is valid
+    if (!email || !emailRegex.test(email)) {
+      setAlert({
+        type: "danger",
+        msg: "Please enter a valid email address.",
+      });
+      return false;
+    }
+
+    // Check if password length is at least 6 characters
+    if (!password || password.length < 6) {
+      setAlert({
+        type: "danger",
+        msg: "Password must be at least 6 characters long.",
+      });
+      return false;
+    }
+    if (!isLogin) {//means it is signup not login/signin
+      // Check if full name contains both first name and last name
+      const names = fullName.trim().split(" ");
+      if (names.length < 2) {
+        setAlert({
+          type: "danger",
+          msg: "Please enter both first name and last name.",
+        });
+        return false;
+      }
+
+      // Check if confirm password matches password (for sign-up)
+      if (!isLogin && password !== confirmPassword) {
+        setAlert({
+          type: "danger",
+          msg: "Passwords do not match.",
+        });
+        return false;
+      }
+    }
+    return true;
   };
 
   return (
@@ -93,9 +145,18 @@ const Auth = () => {
               }}
             ></div>
             <div class="w-full p-8 lg:w-1/2">
-              <h2 class="text-2xl font-semibold text-gray-700 text-center">
-                Brand
-              </h2>
+              <div className="flex justify-center items-center">
+                <Image
+                  src="/g-note-logo.png"
+                  width={50}
+                  height={100}
+                  alt="Logo Image"
+                />
+                <h2 class="text-2xl font-semibold text-gray-700 text-center">
+                  G-Note
+                </h2>
+              </div>
+
               <p class="text-xl text-gray-600 text-center">Welcome back!</p>
 
               <div class="mt-4 flex items-center justify-between">
@@ -106,7 +167,7 @@ const Auth = () => {
                 <span class="border-b w-1/5 lg:w-1/4"></span>
               </div>
               <div className="flex justify-center">
-              <Alert alert={alert} setAlert={setAlert}/>
+                <Alert alert={alert} setAlert={setAlert} />
               </div>
               <div class="mt-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">
@@ -139,7 +200,7 @@ const Auth = () => {
                   type="submit"
                   class="flex justify-center items-center bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
                 >
-                 { isLoading && <SpinerLoading/>}
+                  {isLoading && <SpinerLoading />}
                   Sign In
                 </button>
               </div>
@@ -148,6 +209,7 @@ const Auth = () => {
                 <a
                   onClick={(e) => {
                     setLogin(false);
+                    setAlert(null);
                   }}
                   href="#signup"
                   class="text-xs text-gray-500 uppercase"
@@ -176,13 +238,20 @@ const Auth = () => {
               }}
             ></div>
             <div class="w-full p-8 lg:w-1/2">
-              <h2 class="text-2xl font-semibold text-gray-700 text-center">
-                Brand
-              </h2>
+              <div className="flex justify-center items-center">
+                <Image
+                  src="/g-note-logo.png"
+                  width={50}
+                  height={100}
+                  alt="Logo Image"
+                />
+                <h2 class="text-2xl font-semibold text-gray-700 text-center">
+                  G-Note
+                </h2>
+              </div>
               <p class="text-xl text-gray-600 text-center">
                 Sign up now to begin your journey!
               </p>
-
               <div class="mt-4 flex items-center justify-between">
                 <span class="border-b w-1/5 lg:w-1/4"></span>
                 <a href="#" class="text-xs text-center text-gray-500 uppercase">
@@ -190,6 +259,9 @@ const Auth = () => {
                 </a>
                 <span class="border-b w-1/5 lg:w-1/4"></span>
               </div>
+              <div className="flex justify-center">
+                <Alert alert={alert} setAlert={setAlert} />
+              </div>{" "}
               <div class="mt-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">
                   Full Name
@@ -247,9 +319,8 @@ const Auth = () => {
                   type="submit"
                   class="flex justify-center items-center bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
                 >
-                  { isLoading && <SpinerLoading/>}
+                  {isLoading && <SpinerLoading />}
                   Sign Up
-
                 </button>
               </div>
               <div class="mt-4 flex items-center justify-between">
@@ -257,6 +328,7 @@ const Auth = () => {
                 <a
                   onClick={(e) => {
                     setLogin(true);
+                    setAlert(null);
                   }}
                   href="#signin"
                   class="text-xs text-gray-500 uppercase"
