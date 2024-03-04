@@ -248,7 +248,13 @@ const TableView = () => {
                 </div>
                 <div class="text-sm text-gray-700">{note?.body}</div>
                 <div class="text-sm font-medium text-black">
-                  <DeleteIcon />
+                <div
+                      onClick={(e) => {
+                        startHandleDeleteNote(note);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </div>
                 </div>
               </div>
             </div>
