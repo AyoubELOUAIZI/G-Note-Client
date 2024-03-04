@@ -63,9 +63,14 @@ const Navbar = () => {
                 >
                   Welcome, {user.fullName}!
                 </p>
-                <p style={{ fontSize: "0.8em", margin: "0" }}>
+                {!user?.admin &&   <p style={{ fontSize: "0.8em", margin: "0" }}>
                   We&apos;re glad to have you here.
-                </p>
+                 
+                </p>}
+                {user?.admin &&  <p style={{ fontSize: "0.8em", margin: "0" }}>
+                  You&apos;re authenticated as an Admin.
+                 
+                </p>}
               </div>
             </li>
           )}

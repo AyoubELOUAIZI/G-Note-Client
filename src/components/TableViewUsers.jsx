@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import ConfirmationDialog from "./Dialogs/ConfirmationDialog";
 import Toast from "./Dialogs/Toast";
 
-const TableView = () => {
+const TableViewUsers = () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const router = useRouter();
   const { user } = useContext(AuthContext);
@@ -21,8 +21,8 @@ const TableView = () => {
   const [idNoteToDelete, setidNoteToDelete] = useState(null);
   const [confirmDeleteNote, setConfirmDeleteNote] = useState(false);
   //the code the toast message part
-  const [showToast, setShowToast] = useState(true);
-  const [toastMsg, setToastMsg] = useState("simple message for test toast");
+  const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
   const [isError, setIsError] = useState(false);
 
   const formatDateTime = (dateTimeString) => {
@@ -63,7 +63,7 @@ const TableView = () => {
       });
   }
   useEffect(() => {
-    if (!user || user?.admin) {
+    if (!user || !user?.admin) {
       //virify this later
       router.push("/auth");
       return;
@@ -265,4 +265,4 @@ const TableView = () => {
   );
 };
 
-export default TableView;
+export default TableViewUsers;

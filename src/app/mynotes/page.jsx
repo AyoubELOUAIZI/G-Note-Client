@@ -1,4 +1,4 @@
-import TableView from "@/components/TableView";
+import TableViewNotes from "@/components/TableViewNotes";
 import React from "react";
 
 const page = () => {
@@ -7,7 +7,7 @@ const page = () => {
     <div class="">
     <main class="pt-20 md:pt-24 lg:max-w-7xl mx-auto">
       {/* hellow world this is the page starting ... */}
-      <TableView/>
+      <TableViewNotes/>
     </main>
     </div>
   );
