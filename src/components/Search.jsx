@@ -6,7 +6,7 @@ const Search = ({
   showSelect,
   placeholderText,
   setStartSearch,
-  isLoading
+  isLoading,
 }) => {
   return (
     <div>
@@ -27,23 +27,35 @@ const Search = ({
             }}
             class=" flex justify-around items-center bg-sky-500 text-white hover:bg-sky-600 rounded-r px-2 md:px-3 py-0 md:py-1"
           >
-             {isLoading && <SpinerLoading />}
+            {isLoading && <SpinerLoading />}
             Search
           </button>
         </div>
         {showSelect && (
-          <select
-            id="pricingType"
-            name="pricingType"
-            class="w-full h-10 border-2 border-sky-500 focus:outline-none focus:border-sky-500 text-sky-500 rounded px-2 md:px-3 py-0 md:py-1 tracking-wider"
-          >
-            <option value="All" selected="">
-              All
-            </option>
-            <option value="Freemium">Freemium</option>
-            <option value="Free">Free</option>
-            <option value="Paid">Paid</option>
-          </select>
+          <>
+            <select
+              id="role"
+              name="role"
+              class="w-full h-10 border-2 border-sky-500 focus:outline-none focus:border-sky-500 text-sky-500 rounded px-2 md:px-3 py-0 md:py-1 tracking-wider"
+            >
+              <option value="All" selected>
+                All Roles
+              </option>
+              <option value="admin">Administrator</option>
+              <option value="client">Client</option>
+            </select>
+            <select
+              id="subscription"
+              name="subscription"
+              class="w-full h-10 border-2 border-sky-500 focus:outline-none focus:border-sky-500 text-sky-500 rounded px-2 md:px-3 py-0 md:py-1 tracking-wider"
+            >
+              <option value="All" selected>
+                All Subscriptions
+              </option>
+              <option value="subscribed">Subscribed</option>
+              <option value="unsubscribed">Unsubscribed</option>
+            </select>
+          </>
         )}
       </div>
     </div>

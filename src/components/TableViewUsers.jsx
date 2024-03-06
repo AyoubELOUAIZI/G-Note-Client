@@ -12,6 +12,7 @@ import ConfirmationDialog from "./Dialogs/ConfirmationDialog";
 import Toast from "./Dialogs/Toast";
 import AddUserIcon from "./Icons/AddUserIcon";
 import UnverifiedUser from "./Icons/UnverifiedUser";
+import Search from "./Search";
 
 const TableViewUsers = () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -28,6 +29,10 @@ const TableViewUsers = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [isError, setIsError] = useState(false);
+  // for search
+  const [searchWord, setsearchWord] = useState("");
+  const [startSearch, setStartSearch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const formatDateTime = (dateTimeString) => {
     const dateParts = dateTimeString.split(/[-T:Z]/); // Split the date string
@@ -139,6 +144,67 @@ const TableViewUsers = () => {
     setidUserToDelete(null);
   }, [confirmDeleteUser]);
 
+  // code for searching users
+  const searchUsers = async (keyword) => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/users/search?keyword=${keyword}`
+      );
+      return response.data; // Assuming your API returns the list of users
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      throw error; // Re-throwing the error for handling at the caller's end
+    }
+  };
+
+  // Trigger search when startSearch changes
+  useEffect(() => {
+    console.log("it should try to start search");
+    if (!startSearch) {
+      return; // Do nothing if startSearch is false
+    }
+
+    if (!searchWord) {
+      setIsError(true);
+      setToastMsg("Please enter a keyword and try again");
+      setShowToast(true);
+      setStartSearch(false);
+      return;
+    }
+
+    // Fetch users based on searchWord
+    searchUsers(searchWord)
+      .then((users) => {
+        console.log("Fetched users:", users);
+        if (users.length > 0) {
+          setUsers(users);
+          setToastMsg(
+            `${users.length} users have been found for the keyword 💦🔎${searchWord}🔎💦.`
+          );
+          setShowToast(true);
+        } else {
+          setToastMsg("No users found for the given keyword");
+          setShowToast(true);
+        }
+        // Reset startSearch after fetching users
+        console.log("the search closed for now.");
+      })
+      .catch((error) => {
+        console.error("Failed to fetch users:", error);
+        // Handle error gracefully, e.g., display an error message to the user
+        if (error.response?.data) {
+          setIsError(true);
+          setToastMsg(error.response.data);
+          setShowToast(true);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setStartSearch(false);
+      });
+  }, [startSearch]); // Run this effect whenever startSearch changes
+
   return (
     <div>
       <ConfirmationDialog
@@ -154,13 +220,26 @@ const TableViewUsers = () => {
       />
       <div className="p-5 min-h-screen bg-gray-100">
         <div className="flex items-end justify-between">
-          <h1 className="text-xl mb-2">List users</h1>
-          <div className="border-slate-500 border m-1"
-            onClick={(e) => {
-              handleAddUser();
-            }}
-          >
-            <AddUserIcon />
+          <div className="flex items-center">
+            <h1 className="text-xl mb-2">List users</h1>
+            <div
+              className="border-slate-500 border m-1"
+              onClick={(e) => {
+                handleAddUser();
+              }}
+            >
+              <AddUserIcon />
+            </div>
+          </div>
+          <div className="mb-2 mr-1">
+            <Search
+              searchWord={searchWord}
+              setsearchWord={setsearchWord}
+              showSelect={true}
+              placeholderText={"Search users ..."}
+              setStartSearch={setStartSearch}
+              isLoading={isLoading}
+            />
           </div>
         </div>
         <UserForm
@@ -192,7 +271,7 @@ const TableViewUsers = () => {
                   Role
                 </th>
                 <th className="w-24 p-3 text-sm font-semibold tracking-wide text-left">
-                Verified
+                  Verified
                 </th>
                 <th className="w-24 p-3 text-sm font-semibold tracking-wide text-left">
                   Created At
@@ -209,7 +288,10 @@ const TableViewUsers = () => {
               {Users?.map((user) => (
                 <tr className="bg-white" key={user?.id}>
                   <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
-                    <a href="#" className="font-bold text-blue-500 hover:underline">
+                    <a
+                      href="#"
+                      className="font-bold text-blue-500 hover:underline"
+                    >
                       {user?.fullName}
                     </a>
                   </td>
@@ -265,7 +347,10 @@ const TableViewUsers = () => {
               <div className="bg-white space-y-3 p-4 rounded-lg shadow">
                 <div className="flex items-center space-x-2 text-sm">
                   <div>
-                    <a href="#" className="text-blue-500 font-bold hover:underline">
+                    <a
+                      href="#"
+                      className="text-blue-500 font-bold hover:underline"
+                    >
                       {user?.fullName}
                     </a>
                   </div>
@@ -279,14 +364,14 @@ const TableViewUsers = () => {
                 <div className="text-sm text-gray-700 flex">
                   {user?.email}
                   {user?.admin ? (
-                      <span className="p-1.5 ml-1 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
-                        Admin
-                      </span>
-                    ) : (
-                      <span className="p-1.5 ml-1 text-xs font-medium uppercase tracking-wider text-orange-800 bg-orange-200 rounded-lg bg-opacity-50">
-                        client
-                      </span>
-                    )}
+                    <span className="p-1.5 ml-1 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                      Admin
+                    </span>
+                  ) : (
+                    <span className="p-1.5 ml-1 text-xs font-medium uppercase tracking-wider text-orange-800 bg-orange-200 rounded-lg bg-opacity-50">
+                      client
+                    </span>
+                  )}
                   {user?.subscribed ? <VerifiedUserIcon /> : <UnverifiedUser />}
                 </div>
                 <div className="text-sm font-medium text-black">

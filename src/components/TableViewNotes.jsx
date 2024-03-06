@@ -181,7 +181,7 @@ const TableViewNotes = () => {
         console.log("Fetched notes:", notes);
         if(notes.length > 0) {
           setNotes(notes);
-          setToastMsg(`${notes.length} notes have been founded 💦💦.`);
+          setToastMsg(`${notes.length} notes have been founded for the word 💦🔎${searchWord}🔎💦.`);
           setShowToast(true);
         }
         // Reset startSearch after fetching notes

@@ -34,7 +34,7 @@ const Auth = () => {
   }, []);
 
   const [isLogin, setLogin] = useState(true);
-  const [email, setEmail] = useState("test@gmail.com");
+  const [email, setEmail] = useState("admin@example.com");
   const [password, setPassword] = useState("000000");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
