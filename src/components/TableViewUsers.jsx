@@ -152,9 +152,9 @@ const TableViewUsers = () => {
         isError={isError}
         setIsError={setIsError}
       />
-      <div class="p-5 min-h-screen bg-gray-100">
+      <div className="p-5 min-h-screen bg-gray-100">
         <div className="flex items-end justify-between">
-          <h1 class="text-xl mb-2">List users</h1>
+          <h1 className="text-xl mb-2">List users</h1>
           <div className="border-slate-500 border m-1"
             onClick={(e) => {
               handleAddUser();
@@ -178,57 +178,57 @@ const TableViewUsers = () => {
           setIsError={setIsError}
         />
         {/* for large screen we use this */}
-        <div class="overflow-auto rounded-lg shadow hidden md:block">
-          <table class="w-full">
-            <thead class="bg-gray-50 border-b-2 border-gray-200">
+        <div className="overflow-auto rounded-lg shadow hidden md:block">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b-2 border-gray-200">
               <tr>
-                <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="w-24 p-3 text-sm font-semibold tracking-wide text-left">
                   Full name
                 </th>
-                <th class="p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="p-3 text-sm font-semibold tracking-wide text-left">
                   Email
                 </th>
-                <th class="w-24 p-3  text-sm font-semibold tracking-wide text-center">
+                <th className="w-24 p-3  text-sm font-semibold tracking-wide text-center">
                   Role
                 </th>
-                <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="w-24 p-3 text-sm font-semibold tracking-wide text-left">
                 Verified
                 </th>
-                <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="w-24 p-3 text-sm font-semibold tracking-wide text-left">
                   Created At
                 </th>
-                <th class="w-16 p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="w-16 p-3 text-sm font-semibold tracking-wide text-left">
                   Edit
                 </th>
-                <th class="w-16 p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="w-16 p-3 text-sm font-semibold tracking-wide text-left">
                   Delete
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100">
               {Users?.map((user) => (
-                <tr class="bg-white" key={user?.id}>
-                  <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
-                    <a href="#" class="font-bold text-blue-500 hover:underline">
+                <tr className="bg-white" key={user?.id}>
+                  <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
+                    <a href="#" className="font-bold text-blue-500 hover:underline">
                       {user?.fullName}
                     </a>
                   </td>
-                  <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                  <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
                     {user?.email}
                   </td>
-                  <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                  <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
                     {user?.admin ? (
-                      <span class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                      <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
                         Admin
                       </span>
                     ) : (
-                      <span class="p-1.5 text-xs font-medium uppercase tracking-wider text-orange-800 bg-orange-200 rounded-lg bg-opacity-50">
+                      <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-orange-800 bg-orange-200 rounded-lg bg-opacity-50">
                         client
                       </span>
                     )}
                   </td>
-                  <td class="p-3 text-sm text-gray-700  whitespace-nowrap">
-                    {/* <span class="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50"> */}
+                  <td className="p-3 text-sm text-gray-700  whitespace-nowrap">
+                    {/* <span className="p-1.5 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50"> */}
                     {user?.subscribed ? (
                       <VerifiedUserIcon />
                     ) : (
@@ -236,15 +236,15 @@ const TableViewUsers = () => {
                     )}
                     {/* </span> */}
                   </td>
-                  <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                  <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
                     {formatDateTime(user?.createdAt)}
                   </td>
-                  <td class="p-3 text-sm  text-gray-700 whitespace-nowrap">
+                  <td className="p-3 text-sm  text-gray-700 whitespace-nowrap">
                     <div onClick={(e) => handleUpdateUser(user)}>
                       <UpdateIcon />
                     </div>
                   </td>
-                  <td class="p-3 text-sm flex justify-center  text-gray-700 whitespace-nowrap">
+                  <td className="p-3 text-sm flex justify-center  text-gray-700 whitespace-nowrap">
                     <div
                       onClick={(e) => {
                         startHandleDeleteUser(user);
@@ -259,37 +259,37 @@ const TableViewUsers = () => {
           </table>
         </div>
         {/* for the midiam screen we use this  */}
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
           {Users?.map((user) => (
             <div key={user?.id}>
-              <div class="bg-white space-y-3 p-4 rounded-lg shadow">
-                <div class="flex items-center space-x-2 text-sm">
+              <div className="bg-white space-y-3 p-4 rounded-lg shadow">
+                <div className="flex items-center space-x-2 text-sm">
                   <div>
-                    <a href="#" class="text-blue-500 font-bold hover:underline">
+                    <a href="#" className="text-blue-500 font-bold hover:underline">
                       {user?.fullName}
                     </a>
                   </div>
-                  <div class="text-gray-500">
+                  <div className="text-gray-500">
                     {formatDateTime(user?.createdAt)}
                   </div>
                   <div onClick={(e) => handleUpdateUser(user)}>
                     <UpdateIcon />
                   </div>
                 </div>
-                <div class="text-sm text-gray-700 flex">
+                <div className="text-sm text-gray-700 flex">
                   {user?.email}
                   {user?.admin ? (
-                      <span class="p-1.5 ml-1 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                      <span className="p-1.5 ml-1 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
                         Admin
                       </span>
                     ) : (
-                      <span class="p-1.5 ml-1 text-xs font-medium uppercase tracking-wider text-orange-800 bg-orange-200 rounded-lg bg-opacity-50">
+                      <span className="p-1.5 ml-1 text-xs font-medium uppercase tracking-wider text-orange-800 bg-orange-200 rounded-lg bg-opacity-50">
                         client
                       </span>
                     )}
                   {user?.subscribed ? <VerifiedUserIcon /> : <UnverifiedUser />}
                 </div>
-                <div class="text-sm font-medium text-black">
+                <div className="text-sm font-medium text-black">
                   <div
                     onClick={(e) => {
                       startHandleDeleteUser(user);

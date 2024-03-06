@@ -39,6 +39,14 @@ const TableViewNotes = () => {
     return formattedDate;
   };
 
+  // function resumeText(text) {
+  //   if (text?.length > 60) {
+  //     return text.slice(0, 57) + "...";
+  //   } else {
+  //     return text;
+  //   }
+  // }
+
   function handleUpdateNote(noteToUpdate) {
     console.log(noteToUpdate);
     setNoteToUpdate(noteToUpdate);
@@ -91,7 +99,7 @@ const TableViewNotes = () => {
       .then((response) => {
         if (response.status === 204 || response.status === 200) {
           console.log("Note deleted successfully");
-          setToastMsg("Note deleted successfully")
+          setToastMsg("Note deleted successfully");
           setShowToast(true);
 
           // Fetch notes again after deletion
@@ -148,9 +156,9 @@ const TableViewNotes = () => {
         isError={isError}
         setIsError={setIsError}
       />
-      <div class="p-5 min-h-screen bg-gray-100">
+      <div className="p-5 min-h-screen bg-gray-100">
         <div className="flex">
-          <h1 class="text-xl mb-2">Your notes</h1>
+          <h1 className="text-xl mb-2">Your notes</h1>
           <div
             onClick={(e) => {
               handleAddNote();
@@ -174,47 +182,48 @@ const TableViewNotes = () => {
           setIsError={setIsError}
         />
         {/* for large screen we use this */}
-        <div class="overflow-auto rounded-lg shadow hidden md:block">
-          <table class="w-full">
-            <thead class="bg-gray-50 border-b-2 border-gray-200">
+        <div className="overflow-auto rounded-lg shadow hidden md:block">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b-2 border-gray-200">
               <tr>
-                <th class="w-20 p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="w-20 p-3 text-sm font-semibold tracking-wide text-left">
                   Subject
                 </th>
-                <th class="p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="p-3 text-sm font-semibold tracking-wide text-left">
                   Details
                 </th>
-                <th class="w-24 p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="w-24 p-3 text-sm font-semibold tracking-wide text-left">
                   Date
                 </th>
-                <th class="w-16 p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="w-16 p-3 text-sm font-semibold tracking-wide text-left">
                   Edit
                 </th>
-                <th class="w-16 p-3 text-sm font-semibold tracking-wide text-left">
+                <th className="w-16 p-3 text-sm font-semibold tracking-wide text-left">
                   Delete
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100">
               {notes?.map((note) => (
-                <tr class="bg-white" key={note?.idNote}>
-                  <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
-                    <a href="#" class="font-bold text-blue-500 hover:underline">
+                <tr className="bg-white" key={note?.idNote}>
+                  <td className="p-3 text-sm text-gray-700 xl:whitespace-nowrap">
+                    <a
+                      href="#"
+                      className="font-bold text-blue-500 hover:underline"
+                    >
                       {note?.subject}
                     </a>
                   </td>
-                  <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
-                    {note?.body}
-                  </td>
-                  <td class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                  <td className="p-3 text-sm text-gray-700">{note?.body}</td>
+                  <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
                     {formatDateTime(note?.createdAt)}
                   </td>
-                  <td class="p-3 text-sm  text-gray-700 whitespace-nowrap">
+                  <td className="p-3 text-sm  text-gray-700 whitespace-nowrap">
                     <div onClick={(e) => handleUpdateNote(note)}>
                       <UpdateIcon />
                     </div>
                   </td>
-                  <td class="p-3 text-sm flex justify-center  text-gray-700 whitespace-nowrap">
+                  <td className="p-3 text-sm   text-gray-700 whitespace-nowrap">
                     <div
                       onClick={(e) => {
                         startHandleDeleteNote(note);
@@ -229,32 +238,35 @@ const TableViewNotes = () => {
           </table>
         </div>
         {/* for the midiam screen we use this  */}
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
           {notes?.map((note) => (
             <div key={note?.idNote}>
-              <div class="bg-white space-y-3 p-4 rounded-lg shadow">
-                <div class="flex items-center space-x-2 text-sm">
+              <div className="bg-white space-y-3 p-4 rounded-lg shadow">
+                <div className="flex items-center space-x-2 text-sm">
                   <div>
-                    <a href="#" class="text-blue-500 font-bold hover:underline">
+                    <a
+                      href="#"
+                      className="text-blue-500 font-bold hover:underline"
+                    >
                       {note?.subject}
                     </a>
                   </div>
-                  <div class="text-gray-500">
+                  <div className="text-gray-500">
                     {formatDateTime(note?.createdAt)}
                   </div>
                   <div onClick={(e) => handleUpdateNote(note)}>
                     <UpdateIcon />
                   </div>
                 </div>
-                <div class="text-sm text-gray-700">{note?.body}</div>
-                <div class="text-sm font-medium text-black">
-                <div
-                      onClick={(e) => {
-                        startHandleDeleteNote(note);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </div>
+                <div className="text-sm text-gray-700">{note?.body}</div>
+                <div className="text-sm font-medium text-black">
+                  <div
+                    onClick={(e) => {
+                      startHandleDeleteNote(note);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </div>
                 </div>
               </div>
             </div>

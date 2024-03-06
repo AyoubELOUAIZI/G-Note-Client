@@ -87,7 +87,7 @@ const Navbar = () => {
           )}
           {!user && (
             <Link href="/auth">
-              <div class="login-button">Login</div>
+              <div className="login-button">Login</div>
             </Link>
           )}
           {user && (
