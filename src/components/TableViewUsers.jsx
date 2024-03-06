@@ -21,6 +21,7 @@ const TableViewUsers = () => {
   const { user } = useContext(AuthContext);
   //!the user means the user from the list of users in the table
   const [Users, setUsers] = useState(null);
+  const [AllUsers, setAllUsers] = useState(null);
   const [openForm, setOpenForm] = useState(false);
   const [UserToUpdate, setUserToUpdate] = useState(null);
   const [idUserToDelete, setidUserToDelete] = useState(null);
@@ -33,6 +34,10 @@ const TableViewUsers = () => {
   const [searchWord, setsearchWord] = useState("");
   const [startSearch, setStartSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [userFilter, setUserFilter] = useState({
+    role: "All",
+    isSubscribed: "All",
+  });
 
   const formatDateTime = (dateTimeString) => {
     const dateParts = dateTimeString.split(/[-T:Z]/); // Split the date string
@@ -66,6 +71,7 @@ const TableViewUsers = () => {
       .then((response) => {
         console.log(response);
         setUsers(response.data);
+        setAllUsers(response.data);
       })
       .catch((error) => {
         console.error("Error fetching Users:", error);
@@ -179,6 +185,7 @@ const TableViewUsers = () => {
         console.log("Fetched users:", users);
         if (users.length > 0) {
           setUsers(users);
+          setAllUsers(users);
           setToastMsg(
             `${users.length} users have been found for the keyword 💦🔎${searchWord}🔎💦.`
           );
@@ -204,6 +211,35 @@ const TableViewUsers = () => {
         setStartSearch(false);
       });
   }, [startSearch]); // Run this effect whenever startSearch changes
+
+
+
+  useEffect(() => {
+    if (!AllUsers) {
+      return;
+    }
+    
+    const filteredUsers = AllUsers.filter((user) => {
+      const isAdminMatch =
+        userFilter.role === "All" ||
+        user.admin && (userFilter.role === "admin")||
+        !user.admin && (userFilter.role === "client");
+  
+      // Check if isSubscribed filter is set to "All" or matches the user's subscription status
+      const isSubscribedMatch =
+        userFilter.isSubscribed === "All" ||
+        user.subscribed && (userFilter.isSubscribed === "subscribed")||
+       !user.subscribed && (userFilter.isSubscribed === "unsubscribed");
+  
+      // Return true if both isAdminMatch and isSubscribedMatch are true
+      return isAdminMatch && isSubscribedMatch;
+    });
+  
+    // Now filteredUsers contains the filtered list of users based on the userFilter criteria
+    console.log(filteredUsers);
+    setUsers(filteredUsers);
+  }, [AllUsers, userFilter]);
+  
 
   return (
     <div>
@@ -239,6 +275,8 @@ const TableViewUsers = () => {
               placeholderText={"Search users ..."}
               setStartSearch={setStartSearch}
               isLoading={isLoading}
+              userFilter={userFilter}
+              setUserFilter={setUserFilter}
             />
           </div>
         </div>

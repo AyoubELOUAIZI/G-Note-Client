@@ -7,6 +7,8 @@ const Search = ({
   placeholderText,
   setStartSearch,
   isLoading,
+  userFilter,
+  setUserFilter
 }) => {
   return (
     <div>
@@ -34,6 +36,9 @@ const Search = ({
         {showSelect && (
           <>
             <select
+           onChange={(e) =>
+            setUserFilter({ ...userFilter, role: e.target.value })
+          }
               id="role"
               name="role"
               class="w-full h-10 border-2 border-sky-500 focus:outline-none focus:border-sky-500 text-sky-500 rounded px-2 md:px-3 py-0 md:py-1 tracking-wider"
@@ -45,6 +50,9 @@ const Search = ({
               <option value="client">Client</option>
             </select>
             <select
+             onChange={(e) =>
+              setUserFilter({ ...userFilter, isSubscribed: e.target.value })
+            }
               id="subscription"
               name="subscription"
               class="w-full h-10 border-2 border-sky-500 focus:outline-none focus:border-sky-500 text-sky-500 rounded px-2 md:px-3 py-0 md:py-1 tracking-wider"
