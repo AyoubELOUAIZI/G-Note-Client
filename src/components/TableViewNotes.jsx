@@ -10,6 +10,7 @@ import { useContext } from "react";
 import { useRouter } from "next/navigation";
 import ConfirmationDialog from "./Dialogs/ConfirmationDialog";
 import Toast from "./Dialogs/Toast";
+import Search from "./Search";
 
 const TableViewNotes = () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -24,6 +25,9 @@ const TableViewNotes = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [isError, setIsError] = useState(false);
+  const [searchWord, setsearchWord] = useState("");
+  const [startSearch, setStartSearch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const formatDateTime = (dateTimeString) => {
     const dateParts = dateTimeString.split(/[-T:Z]/); // Split the date string
@@ -143,6 +147,62 @@ const TableViewNotes = () => {
     setidNoteToDelete(null);
   }, [confirmDeleteNote]);
 
+  const searchNotes = async (keyword) => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/notes/search?keyword=${keyword}&userId=${user.id}`
+      );
+      return response.data; // Assuming your API returns the list of notes
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+      throw error; // Re-throwing the error for handling at the caller's end
+    }
+  };
+
+  // Trigger search when startSearch changes
+  useEffect(() => {
+    console.log("it should try to start search");
+    if (!startSearch) {
+      return; // Do nothing if startSearch is false
+    }
+
+    if (!searchWord) {
+      setIsError(true);
+      setToastMsg("Please enter a keyword and try again");
+      setShowToast(true);
+      setStartSearch(false);
+      return;
+    }
+
+    // Fetch notes based on searchWord
+    searchNotes(searchWord)
+      .then((notes) => {
+        console.log("Fetched notes:", notes);
+        if(notes.length > 0) {
+          setNotes(notes);
+          setToastMsg(`${notes.length} notes have been founded 💦💦.`);
+          setShowToast(true);
+        }
+        // Reset startSearch after fetching notes
+        console.log("the search closed for now.");
+      })
+      .catch((error) => {
+        console.error("Failed to fetch notes:", error);
+        // Handle error gracefully, e.g., display an error message to the user
+        if (error.response?.data) {
+          setIsError(true);
+          setToastMsg(error.response.data);
+          setShowToast(true);
+        }
+      });
+    setIsLoading(false);
+    setStartSearch(false);
+  }, [startSearch]); // Run this effect whenever startSearch changes
+
+  // Example usage:
+  // const keyword = "exampleKeyword";
+
   return (
     <div>
       <ConfirmationDialog
@@ -157,14 +217,26 @@ const TableViewNotes = () => {
         setIsError={setIsError}
       />
       <div className="p-5 min-h-screen bg-gray-100">
-        <div className="flex">
-          <h1 className="text-xl mb-2">Your notes</h1>
-          <div
-            onClick={(e) => {
-              handleAddNote();
-            }}
-          >
-            <AddIcon />
+        <div className="md:flex justify-between">
+          <div className="flex">
+            <h1 className="text-xl mb-2">Your notes</h1>
+            <div
+              onClick={(e) => {
+                handleAddNote();
+              }}
+            >
+              <AddIcon />
+            </div>
+          </div>
+          <div className="mb-2 mr-1">
+            <Search
+              searchWord={searchWord}
+              setsearchWord={setsearchWord}
+              showSelect={false}
+              placeholderText={"Search your notes..."}
+              setStartSearch={setStartSearch}
+              isLoading={isLoading}
+            />
           </div>
         </div>
         <NoteForm
