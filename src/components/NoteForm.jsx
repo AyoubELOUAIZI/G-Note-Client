@@ -49,7 +49,9 @@ const NoteForm = ({
       }
       let res;
       if (noteToUpdate) {
-        res = await axios.put(`${baseUrl}/api/notes`, noteData);
+        res = await axios.put(`${baseUrl}/api/notes`, noteData, {
+          withCredentials: true,
+        });
         if (res.status >= 200 && res.status < 300) {
           // Request successful
           fetchNotes(); // Assuming fetchNotes is a function to reload notes
@@ -63,7 +65,9 @@ const NoteForm = ({
           setToastMsg("Error to add new note");
         }
       } else {
-        res = await axios.post(`${baseUrl}/api/notes`, noteData);
+        res = await axios.post(`${baseUrl}/api/notes`, noteData, {
+          withCredentials: true,
+        });
         if (res.status >= 200 && res.status < 300) {
           // Request successful
           fetchNotes(); // Assuming fetchNotes is a function to reload notes

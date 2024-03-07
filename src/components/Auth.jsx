@@ -58,6 +58,9 @@ const Auth = () => {
           password,
           fullName,
           confirmPassword,
+        },
+        {
+          withCredentials: true,
         }
       );
       // console.log(response);

@@ -60,7 +60,9 @@ const UserForm = ({
       let res;
       if (userToUpdate) {
         // Update existing user
-        res = await axios.put(`${baseUrl}/api/users`, userData);
+        res = await axios.put(`${baseUrl}/api/users`, userData,{
+          withCredentials: true,
+        });
         if (res.status >= 200 && res.status < 300) {
           // Request successful
           fetchAllUsers(); // Assuming fetchAllUsers is a function to reload users
@@ -72,7 +74,9 @@ const UserForm = ({
         }
       } else {
         // Add new user
-        res = await axios.post(`${baseUrl}/api/users/add`, userData);
+        res = await axios.post(`${baseUrl}/api/users/add`, userData, {
+          withCredentials: true,
+        });
         if (res.status >= 200 && res.status < 300) {
           // Request successful
           fetchAllUsers(); // Assuming fetchAllUsers is a function to reload users

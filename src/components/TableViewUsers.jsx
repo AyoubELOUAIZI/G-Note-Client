@@ -67,7 +67,9 @@ const TableViewUsers = () => {
   function fetchAllUsers() {
     // Retrieve the Users for the user
     axios
-      .get(`${baseUrl}/api/users`)
+      .get(`${baseUrl}/api/users`, {
+        withCredentials: true,
+      })
       .then((response) => {
         console.log(response);
         setUsers(response.data);
@@ -102,7 +104,9 @@ const TableViewUsers = () => {
 
     // Proceeding with deletion without confirmation dialog for now
     axios
-      .delete(`${baseUrl}/api/users/${id}`)
+      .delete(`${baseUrl}/api/users/${id}`, {
+        withCredentials: true,
+      })
       .then((response) => {
         if (response.status === 204 || response.status === 200) {
           console.log("User deleted successfully");
@@ -155,7 +159,10 @@ const TableViewUsers = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${baseUrl}/api/users/search?keyword=${keyword}`
+        `${baseUrl}/api/users/search?keyword=${keyword}`,
+        {
+          withCredentials: true,
+        }
       );
       return response.data; // Assuming your API returns the list of users
     } catch (error) {
@@ -212,34 +219,31 @@ const TableViewUsers = () => {
       });
   }, [startSearch]); // Run this effect whenever startSearch changes
 
-
-
   useEffect(() => {
     if (!AllUsers) {
       return;
     }
-    
+
     const filteredUsers = AllUsers.filter((user) => {
       const isAdminMatch =
         userFilter.role === "All" ||
-        user.admin && (userFilter.role === "admin")||
-        !user.admin && (userFilter.role === "client");
-  
+        (user.admin && userFilter.role === "admin") ||
+        (!user.admin && userFilter.role === "client");
+
       // Check if isSubscribed filter is set to "All" or matches the user's subscription status
       const isSubscribedMatch =
         userFilter.isSubscribed === "All" ||
-        user.subscribed && (userFilter.isSubscribed === "subscribed")||
-       !user.subscribed && (userFilter.isSubscribed === "unsubscribed");
-  
+        (user.subscribed && userFilter.isSubscribed === "subscribed") ||
+        (!user.subscribed && userFilter.isSubscribed === "unsubscribed");
+
       // Return true if both isAdminMatch and isSubscribedMatch are true
       return isAdminMatch && isSubscribedMatch;
     });
-  
+
     // Now filteredUsers contains the filtered list of users based on the userFilter criteria
     console.log(filteredUsers);
     setUsers(filteredUsers);
   }, [AllUsers, userFilter]);
-  
 
   return (
     <div>
@@ -323,7 +327,7 @@ const TableViewUsers = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {Users?.map((user) => (
+              {Users && Users?.map((user) => (
                 <tr className="bg-white" key={user?.id}>
                   <td className="p-3 text-sm text-gray-700 whitespace-nowrap">
                     <a
@@ -380,7 +384,7 @@ const TableViewUsers = () => {
         </div>
         {/* for the midiam screen we use this  */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
-          {Users?.map((user) => (
+          {Users && Users?.map((user) => (
             <div key={user?.id}>
               <div className="bg-white space-y-3 p-4 rounded-lg shadow">
                 <div className="flex items-center space-x-2 text-sm">
