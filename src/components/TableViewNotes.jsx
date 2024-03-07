@@ -65,7 +65,9 @@ const TableViewNotes = () => {
   function fetchNotes() {
     // Retrieve the notes for the user
     axios
-      .get(`${baseUrl}/api/notes/${user.id}`)
+      .get(`${baseUrl}/api/notes/${user.id}`,{
+        withCredentials: true,
+      })
       .then((response) => {
         console.log(response);
         setNotes(response.data);
@@ -99,7 +101,9 @@ const TableViewNotes = () => {
 
     // Proceeding with deletion without confirmation dialog for now
     axios
-      .delete(`${baseUrl}/api/notes/${id}`)
+      .delete(`${baseUrl}/api/notes/${id}`,{
+        withCredentials: true,
+      })
       .then((response) => {
         if (response.status === 204 || response.status === 200) {
           console.log("Note deleted successfully");
@@ -151,7 +155,9 @@ const TableViewNotes = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${baseUrl}/api/notes/search?keyword=${keyword}&userId=${user.id}`
+        `${baseUrl}/api/notes/search?keyword=${keyword}&userId=${user.id}`,{
+          withCredentials: true,
+        }
       );
       return response.data; // Assuming your API returns the list of notes
     } catch (error) {

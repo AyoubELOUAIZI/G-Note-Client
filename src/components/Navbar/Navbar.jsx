@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import AuthContext from "@/contexts/AuthContext";
 import { useContext } from "react";
+import axios  from "axios";
 
 const Navbar = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -21,10 +22,23 @@ const Navbar = () => {
     hamburger.classList.toggle("toggle");
   }
 
-  function Logout(){
-    //implementing the logout functionality here.
-    //we can also call the logout api to remove the cookies.
-    setUser(null);
+  async function logout() {
+    console.log("the logout start")
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      // Make a POST request to the /signout endpoint to remove the cookies
+      const res = await axios.post(`${baseUrl}/api/users/signout`, {
+        withCredentials: true,
+      });
+      if (res) {
+        console.log(res);
+        // After successfully logging out, set the user to null or perform any other necessary actions
+        setUser(null);
+      }
+    } catch (error) {
+      // Handle any errors that occur during the logout process
+      console.error("Error logging out:", error);
+    }
   }
 
   return (
@@ -34,7 +48,12 @@ const Navbar = () => {
           href="/"
           className="flex items-center mb-0 sm:mb-0 space-x-1 rtl:space-x-reverse logo"
         >
-          <Image src="/g-note-logo.png" width={40} height={100} alt="Logo Image" />
+          <Image
+            src="/g-note-logo.png"
+            width={40}
+            height={100}
+            alt="Logo Image"
+          />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
             G-Note
           </span>
@@ -63,14 +82,16 @@ const Navbar = () => {
                 >
                   Welcome, {user.fullName}!
                 </p>
-                {!user?.admin &&   <p style={{ fontSize: "0.8em", margin: "0" }}>
-                  We&apos;re glad to have you here.
-                 
-                </p>}
-                {user?.admin &&  <p style={{ fontSize: "0.8em", margin: "0" }}>
-                  You&apos;re authenticated as an Admin.
-                 
-                </p>}
+                {!user?.admin && (
+                  <p style={{ fontSize: "0.8em", margin: "0" }}>
+                    We&apos;re glad to have you here.
+                  </p>
+                )}
+                {user?.admin && (
+                  <p style={{ fontSize: "0.8em", margin: "0" }}>
+                    You&apos;re authenticated as an Admin.
+                  </p>
+                )}
               </div>
             </li>
           )}
@@ -92,7 +113,12 @@ const Navbar = () => {
           )}
           {user && (
             <Link href="/auth">
-              <div className="login-button" onClick={(e) => Logout()}>
+              <div
+                className="login-button"
+                onClick={(e) => {
+                  logout();
+                }}
+              >
                 Sign out
               </div>
             </Link>
