@@ -27,7 +27,7 @@ const Navbar = () => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
       // Make a POST request to the /signout endpoint to remove the cookies
-      const res = await axios.post(`${baseUrl}/api/users/signout`, {
+      const res = await axios.get(`${baseUrl}/api/users/signout`, {
         withCredentials: true,
       });
       if (res) {
