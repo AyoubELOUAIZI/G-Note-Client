@@ -34,3 +34,31 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+# Client Side Screenshoots for the Project:
+
+## Sign Up:
+![Image Alt Text](./public/img/signup.png)
+
+## Error Messages:
+![Image Alt Text](./public/img/errorvalidation.png)
+
+## Client page/dashboard:
+![Image Alt Text](./public/img/clientpage.png)
+
+## Update the notes for the client user:
+![Image Alt Text](./public/img/updates.png)
+
+## Delete the notes for the client user:
+![Image Alt Text](./public/img/deleteNote.png)
+
+## Search example from the client user page:
+![Image Alt Text](./public/img/search.png)
+
+## Admin Page he can manage the users :
+![Image Alt Text](./public/img/search.png)
+
+this project created using nextjs in the client side and java openLiberty framework in the backend or the serverside api it also use jwt to protecte routes in the server and context api in the front the share user data the link or the web server in my github is : https://github.com/AyoubELOUAIZI/G-Note-WebS use just the master for now because the branch WithPersistence will be available but not now .
+
+Thank you for taking the time to explore my project ✅🚀🚀!
