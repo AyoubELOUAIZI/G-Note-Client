@@ -57,7 +57,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ![Image Alt Text](./public/img/search.png)
 
 ## Admin Page he can manage the users :
-![Image Alt Text](./public/img/search.png)
+![Image Alt Text](./public/img/adminpage.png)
 
 this project created using nextjs in the client side and java openLiberty framework in the backend or the serverside api it also use jwt to protecte routes in the server and context api in the front the share user data the link or the web server in my github is : https://github.com/AyoubELOUAIZI/G-Note-WebS use just the master for now because the branch WithPersistence will be available but not now .
 
